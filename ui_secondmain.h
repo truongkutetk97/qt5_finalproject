@@ -11,12 +11,11 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QRadioButton>
 #include <QtWidgets/QStatusBar>
-#include <QtWidgets/QToolButton>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -25,9 +24,8 @@ class Ui_secondmain
 {
 public:
     QWidget *centralwidget;
-    QPushButton *btn;
-    QToolButton *toolButton;
-    QRadioButton *radioButton;
+    QComboBox *comboBox;
+    QLabel *label;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -38,15 +36,12 @@ public:
         secondmain->resize(800, 600);
         centralwidget = new QWidget(secondmain);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
-        btn = new QPushButton(centralwidget);
-        btn->setObjectName(QString::fromUtf8("btn"));
-        btn->setGeometry(QRect(290, 170, 75, 23));
-        toolButton = new QToolButton(centralwidget);
-        toolButton->setObjectName(QString::fromUtf8("toolButton"));
-        toolButton->setGeometry(QRect(420, 200, 25, 19));
-        radioButton = new QRadioButton(centralwidget);
-        radioButton->setObjectName(QString::fromUtf8("radioButton"));
-        radioButton->setGeometry(QRect(330, 220, 82, 17));
+        comboBox = new QComboBox(centralwidget);
+        comboBox->setObjectName(QString::fromUtf8("comboBox"));
+        comboBox->setGeometry(QRect(270, 130, 69, 22));
+        label = new QLabel(centralwidget);
+        label->setObjectName(QString::fromUtf8("label"));
+        label->setGeometry(QRect(360, 140, 47, 13));
         secondmain->setCentralWidget(centralwidget);
         menubar = new QMenuBar(secondmain);
         menubar->setObjectName(QString::fromUtf8("menubar"));
@@ -64,9 +59,7 @@ public:
     void retranslateUi(QMainWindow *secondmain)
     {
         secondmain->setWindowTitle(QCoreApplication::translate("secondmain", "MainWindow", nullptr));
-        btn->setText(QCoreApplication::translate("secondmain", "PushButton", nullptr));
-        toolButton->setText(QCoreApplication::translate("secondmain", "...", nullptr));
-        radioButton->setText(QCoreApplication::translate("secondmain", "RadioButton", nullptr));
+        label->setText(QCoreApplication::translate("secondmain", "TextLabel", nullptr));
     } // retranslateUi
 
 };

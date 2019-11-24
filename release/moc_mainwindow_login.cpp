@@ -23,7 +23,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_login_t {
     QByteArrayData data[3];
-    char stringdata0[40];
+    char stringdata0[35];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -33,12 +33,11 @@ struct qt_meta_stringdata_MainWindow_login_t {
 static const qt_meta_stringdata_MainWindow_login_t qt_meta_stringdata_MainWindow_login = {
     {
 QT_MOC_LITERAL(0, 0, 16), // "MainWindow_login"
-QT_MOC_LITERAL(1, 17, 21), // "on_pushButton_clicked"
-QT_MOC_LITERAL(2, 39, 0) // ""
+QT_MOC_LITERAL(1, 17, 16), // "entermainwindows"
+QT_MOC_LITERAL(2, 34, 0) // ""
 
     },
-    "MainWindow_login\0on_pushButton_clicked\0"
-    ""
+    "MainWindow_login\0entermainwindows\0"
 };
 #undef QT_MOC_LITERAL
 
@@ -70,7 +69,7 @@ void MainWindow_login::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int
         auto *_t = static_cast<MainWindow_login *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->on_pushButton_clicked(); break;
+        case 0: _t->entermainwindows(); break;
         default: ;
         }
     }

@@ -14,6 +14,9 @@ class secondmain : public QMainWindow
 public:
     explicit secondmain(QWidget *parent = nullptr);
     ~secondmain();
+private slots:
+    void scanSerialPorts();
+    void on_comboBox_activated(int index);
 
 private:
     Ui::secondmain *ui;

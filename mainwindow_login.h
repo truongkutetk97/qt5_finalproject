@@ -16,7 +16,7 @@ public:
     ~MainWindow_login();
 
 private slots:
-    void on_pushButton_clicked();
+    void entermainwindows();
 
 private:
     Ui::MainWindow_login *ui;
