@@ -8,6 +8,6 @@ int main(int argc, char *argv[])
 //    MainWindow_login w;
     secondmain w;
     w.show();
-    w.setFixedSize(400,400 );
+    w.setFixedSize(800,400 );
     return a.exec();
 }

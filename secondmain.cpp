@@ -18,7 +18,7 @@
 static QSerialPort serial;
 static QJsonDocument   *doc =new QJsonDocument();
 static QString fn = "C:/Users/truongdeptrai/Documents/qt5_finalproject/test.json";
-
+static QJsonObject json;
 secondmain::secondmain(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::secondmain)
@@ -97,7 +97,7 @@ void secondmain::on_pushButton_clicked()
 {
     ui->textBrowser->clear();
     *doc = loadJson(fn);
-    QJsonObject json = doc->object();
+     json = doc->object();
     foreach(const QString& key, json.keys()) {
         QJsonValue value = json.value(key);
         QString texttemp = key.simplified() +"="+ json.value(key).toString().simplified() ;
@@ -107,8 +107,13 @@ void secondmain::on_pushButton_clicked()
 }
 void secondmain::on_pushButton_2_clicked()
 {
-
-    secondmain::saveJson(*doc,fn);
+    QString *k = new  QString(ui->lineEdit->text());
+    QString *v = new  QString(ui->lineEdit_2->text());
+    json[*k]=*v;
+    QJsonDocument temp(json);
+    secondmain::saveJson(temp,fn);
+    delete k;
+    delete v;
 }
 QJsonDocument secondmain::loadJson(QString fileName) {
     QFile jsonFile(fileName);
@@ -121,4 +126,9 @@ void secondmain::saveJson(QJsonDocument document, QString fileName) {
     jsonFile.open(QFile::WriteOnly);
     jsonFile.write(document.toJson());
     qDebug() << "Added";
+}
+
+void secondmain::on_pushButton_3_clicked()
+{
+    ui->textBrowser->clear();
 }
