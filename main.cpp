@@ -6,8 +6,8 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 //    MainWindow_login w;
-//    w.show();
     secondmain w;
     w.show();
+    w.setFixedSize(400,400 );
     return a.exec();
 }

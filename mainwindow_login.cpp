@@ -1,7 +1,7 @@
 #include "mainwindow_login.h"
 #include "ui_mainwindow_login.h"
 #include "secondmain.h"
-
+#include "adminwindow.h"
 
 MainWindow_login::MainWindow_login(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow_login)
@@ -20,7 +20,15 @@ MainWindow_login::~MainWindow_login()
 }
 void MainWindow_login::entermainwindows()
 {
-    secondmain  *a = new secondmain (this);
-    this->hide();
-    a->show();
+    if(ui->lineEdit_2->text()=="admin")
+    {
+        adminwindow *admin = new adminwindow(this);
+        this->hide();
+        admin->show();
+    }else
+    {
+        secondmain  *a = new secondmain (this);
+        this->hide();
+        a->show();
+    }
 }
