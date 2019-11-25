@@ -16,7 +16,7 @@
 #include <QJsonObject>
 #include <QJsonValue>
 static QJsonDocument   *doc =new QJsonDocument();
-static QString fn = "C:/Users/truongdeptrai/Documents/qt5_finalproject/test.json";
+static QString fn = "/home/truongdeptrai/Documents/FINALPROJECT_QT5/qt5_finalproject/test.json";
 static QJsonObject json;
 static QString portname;
 static bool serialconnected = false;
@@ -42,45 +42,38 @@ secondmain::secondmain(QWidget *parent) :
     QTimer *timer = new QTimer(this);
 //    serial.open(QIODevice::ReadWrite);
     connect(timer,SIGNAL(timeout()),this,SLOT(scanSerialPorts()));
-    /*connect(this->serialports,&QSerialPort::readyRead,[=](){
-//        serialbuffer=this->serialports->readAll();
-//        serialoutput += QString::fromStdString(serialbuffer.toStdString());
-//        ui->textBrowser_2->append(serialoutput);
-        ui->textBrowser_2->append(this->serialports->readAll());
-    });*/
     connect(this->serialports,&QSerialPort::readyRead,this,&secondmain::serialreceiverr);
-    connect(ui->pushButton_5,&QPushButton::clicked,[=](){
-        ui->textBrowser_2->append("a: "+this->serialports->readAll());
-        if(this->serialports->isOpen()) qDebug()<<"opened";
-        if(this->serialports->isWritable()) qDebug()<<"isWritable";
-        if(this->serialports->isReadable()) qDebug()<<"isReadable";
-
-    });
     connect(ui->pushButton_6,&QPushButton::clicked,[=](){
-
         ui->textBrowser_2->clear();
     });
     connect(ui->pushButton_4,&QPushButton::clicked,[=](){ //send
-        //    this->serialports->open(QIODevice::ReadWrite);
-            QString command = ui->lineEdit_3->text();
-            command.append("\n");
-
+//            QString command = ui->lineEdit_3->text();
+            QString command;
+            command +="{";
+            QJsonDocument a = loadJson(fn);
+            QJsonObject b = a.object();
+            uint8_t indexx = 1;
+            foreach(const QString& key, b.keys()) {
+                QJsonValue value1 = b.value(key);
+                QString texttemp = key.simplified() +"="+ b.value(key).toString().simplified() ;
+                command = command + "\"" +key.simplified() +"\"" +":"
+                                     "\"" ;command +=b.value(key).toString();command+= "\"" ;
+                if(indexx!=b.keys().length())command= command +",";
+                indexx++;
+            }
+            command +="}";
+            command.append("@");
             this->serialports->write(command.toUtf8());
-            this->serialports->waitForBytesWritten(100);
+            qDebug()<<command;
             command.clear();
-            qDebug()<<"Sentfrombuttonclicked";
 
     });
-
-//    connect(ui->label,&QLabel::,[=](){
-//    QMessageBox m;
-//    int ret = m.information(this,"truongdeptraititle","truongdeptraitext",QMessageBox::Open|QMessageBox::Save);
-//    });
     timer->start(1000);
 }
 
 secondmain::~secondmain()
 {
+    this->serialports->close();
     delete ui;
 }
 
@@ -105,8 +98,6 @@ void secondmain::on_comboBox_activated(int index)
 {
     qDebug()<< "abc" << index << endl;
     QString failed = "Connect failed";
-
-
     foreach(const QSerialPortInfo &serialPortInfo, QSerialPortInfo::availablePorts()){
         if(serialPortInfo.hasVendorIdentifier() && serialPortInfo.hasProductIdentifier()){
             if(serialPortInfo.productIdentifier()==29987)
@@ -132,7 +123,6 @@ void secondmain::on_comboBox_activated(int index)
     {
         this->serialports->setPortName(portname);
         this->serialports->open(QIODevice::ReadWrite);
-
         this->serialports->setBaudRate(QSerialPort::Baud115200);
         this->serialports->setDataBits(QSerialPort::Data8);
         this->serialports->setParity(QSerialPort::NoParity);
@@ -143,38 +133,30 @@ void secondmain::on_comboBox_activated(int index)
         connect(this->serialports,&QSerialPort::errorOccurred,[=](QSerialPort::SerialPortError error){
             qDebug() <<"Error occurred: " << error;
         });
+        QMessageBox m;
+        int ret = m.information(this,"Notification","Connected",QMessageBox::Close);
     }
 }
 
-void secondmain::on_pushButton_4_clicked()
-{
-
-
-}
-
-
-void secondmain::on_comboBox_currentIndexChanged(int index)
-{
-}
 void secondmain::serialreceiverr()
 {
-    qDebug()<<"Startreceiver";
     QByteArray data;
     data = this->serialports->readAll();
-//    this->serialports->waitForReadyRead(10);
-    qDebug()<<data<<"<- data from arduino";
+    ui->textBrowser_2->append(data);
+//    qDebug()<<data;
 }
 //Json block
 void secondmain::on_pushButton_clicked()
 {
     ui->textBrowser->clear();
+
     *doc = loadJson(fn);
      json = doc->object();
     foreach(const QString& key, json.keys()) {
         QJsonValue value = json.value(key);
         QString texttemp = key.simplified() +"="+ json.value(key).toString().simplified() ;
         ui->textBrowser->append(texttemp);
-        qDebug() << "Key = " << key << ", Value = " << value.toString();
+//        qDebug() << "Key = " << key << ", Value = " << value.toString();
     }
 }
 void secondmain::on_pushButton_2_clicked()
