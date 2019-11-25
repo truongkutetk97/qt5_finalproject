@@ -20,13 +20,16 @@ static QString fn = "C:/Users/truongdeptrai/Documents/qt5_finalproject/test.json
 static QJsonObject json;
 static QString portname;
 static bool serialconnected = false;
-
+static QByteArray serialbuffer;
+static QString serialoutput ;
 secondmain::secondmain(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::secondmain)
 {
     ui->setupUi(this);
-    this->serialports= new QSerialPort;
+    this->serialports= new QSerialPort(this);
+
+
     ui->label->setMinimumWidth(100);
     ui->label->setText("Not connected");
     ui->statusbar->addPermanentWidget(ui->label);
@@ -39,6 +42,35 @@ secondmain::secondmain(QWidget *parent) :
     QTimer *timer = new QTimer(this);
 //    serial.open(QIODevice::ReadWrite);
     connect(timer,SIGNAL(timeout()),this,SLOT(scanSerialPorts()));
+    /*connect(this->serialports,&QSerialPort::readyRead,[=](){
+//        serialbuffer=this->serialports->readAll();
+//        serialoutput += QString::fromStdString(serialbuffer.toStdString());
+//        ui->textBrowser_2->append(serialoutput);
+        ui->textBrowser_2->append(this->serialports->readAll());
+    });*/
+    connect(this->serialports,&QSerialPort::readyRead,this,&secondmain::serialreceiverr);
+    connect(ui->pushButton_5,&QPushButton::clicked,[=](){
+        ui->textBrowser_2->append("a: "+this->serialports->readAll());
+        if(this->serialports->isOpen()) qDebug()<<"opened";
+        if(this->serialports->isWritable()) qDebug()<<"isWritable";
+        if(this->serialports->isReadable()) qDebug()<<"isReadable";
+
+    });
+    connect(ui->pushButton_6,&QPushButton::clicked,[=](){
+
+        ui->textBrowser_2->clear();
+    });
+    connect(ui->pushButton_4,&QPushButton::clicked,[=](){ //send
+        //    this->serialports->open(QIODevice::ReadWrite);
+            QString command = ui->lineEdit_3->text();
+            command.append("\n");
+
+            this->serialports->write(command.toUtf8());
+            this->serialports->waitForBytesWritten(100);
+            command.clear();
+            qDebug()<<"Sentfrombuttonclicked";
+
+    });
 
 //    connect(ui->label,&QLabel::,[=](){
 //    QMessageBox m;
@@ -54,7 +86,6 @@ secondmain::~secondmain()
 
 void secondmain::scanSerialPorts()
 {
-
     if(!serialconnected){
     QStringList cbx;
         foreach(const QSerialPortInfo &serialPortInfo, QSerialPortInfo::availablePorts()){
@@ -67,14 +98,9 @@ void secondmain::scanSerialPorts()
                         &&(serialPortInfo.productIdentifier()!=29987)
                         &&(serialPortInfo.productIdentifier()!=67))
                     cbx.append(QString::number(serialPortInfo.productIdentifier()));
-//                qDebug() << "scanning";
-            }
-            //        for(int i =0; i<QSerialPortInfo::availablePorts().size();i++ ){
-            //        ui->cbx1->insertItems(i,cbx.at(i));
-            //        }
         }        ui->comboBox->addItems(cbx);
     }
-}
+}}
 void secondmain::on_comboBox_activated(int index)
 {
     qDebug()<< "abc" << index << endl;
@@ -105,41 +131,38 @@ void secondmain::on_comboBox_activated(int index)
     if(serialconnected)
     {
         this->serialports->setPortName(portname);
+        this->serialports->open(QIODevice::ReadWrite);
+
         this->serialports->setBaudRate(QSerialPort::Baud115200);
         this->serialports->setDataBits(QSerialPort::Data8);
-
         this->serialports->setParity(QSerialPort::NoParity);
         this->serialports->setStopBits(QSerialPort::OneStop);
         this->serialports->setFlowControl(QSerialPort::NoFlowControl);
-        this->serialports->open(QIODevice::ReadWrite);
+
         qDebug() << "Serialconnected" <<endl;
-        connect(this->serialports, &QSerialPort::readyRead, this, &secondmain::serialreceiverr);
-
-
+        connect(this->serialports,&QSerialPort::errorOccurred,[=](QSerialPort::SerialPortError error){
+            qDebug() <<"Error occurred: " << error;
+        });
     }
 }
 
 void secondmain::on_pushButton_4_clicked()
 {
-    this->serialports->open(QIODevice::ReadWrite);
-    QString command = ui->lineEdit_3->text();
-    command.append("\n");
-    this->serialports->write(command.toUtf8());
-    this->serialports->waitForBytesWritten(10);
-    command.clear();
+
+
 }
+
+
 void secondmain::on_comboBox_currentIndexChanged(int index)
 {
-
-
-
 }
 void secondmain::serialreceiverr()
 {
+    qDebug()<<"Startreceiver";
     QByteArray data;
     data = this->serialports->readAll();
-    qDebug()<<data;
-    qDebug() <<"Serialreceiver";
+//    this->serialports->waitForReadyRead(10);
+    qDebug()<<data<<"<- data from arduino";
 }
 //Json block
 void secondmain::on_pushButton_clicked()
