@@ -99,26 +99,21 @@ secondmain::~secondmain()
 
 void secondmain::scanSerialPorts()
 {
-    if(!serialconnected){
+    if(1){
     QStringList cbx;
         foreach(const QSerialPortInfo &serialPortInfo, QSerialPortInfo::availablePorts()){
             ui->comboBox->clear();
             if(serialPortInfo.hasVendorIdentifier() && serialPortInfo.hasProductIdentifier()){
-                if(serialPortInfo.productIdentifier()==29987) cbx.append("CH340");
-                if(serialPortInfo.productIdentifier()==6000) cbx.append("CP210x");
-                if(serialPortInfo.productIdentifier()==67) cbx.append("ATMEGA8");
-                if((serialPortInfo.productIdentifier()!=6000)
-                        &&(serialPortInfo.productIdentifier()!=29987)
-                        &&(serialPortInfo.productIdentifier()!=67))
-                    cbx.append(QString::number(serialPortInfo.productIdentifier()));
-        }        ui->comboBox->addItems(cbx);
+                cbx.append(serialPortInfo.portName());
+             }        ui->comboBox->addItems(cbx);
+        }
     }
-}}
-void secondmain::on_comboBox_activated(int index)
+}
+void secondmain::on_comboBox_activated(QString index)
 {
     qDebug()<< "abc" << index << endl;
     QString failed = "Connect failed";
-    foreach(const QSerialPortInfo &serialPortInfo, QSerialPortInfo::availablePorts()){
+  /*  foreach(const QSerialPortInfo &serialPortInfo, QSerialPortInfo::availablePorts()){
         if(serialPortInfo.hasVendorIdentifier() && serialPortInfo.hasProductIdentifier()){
             if(serialPortInfo.productIdentifier()==29987)
             {
@@ -138,7 +133,10 @@ void secondmain::on_comboBox_activated(int index)
             }
             else ui->label->setText(failed);
         }
-    }
+    }*/
+    portname = index;
+    serialconnected=true;
+    qDebug ()<<index;
     if(serialconnected)
     {
         this->serialports->setPortName(portname);

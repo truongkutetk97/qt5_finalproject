@@ -21,7 +21,7 @@ public:
 
 private slots:
     void scanSerialPorts();
-    void on_comboBox_activated(int index);
+    void on_comboBox_activated(QString index);
 
     void on_pushButton_clicked();
 

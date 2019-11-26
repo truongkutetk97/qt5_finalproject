@@ -18,9 +18,11 @@ public:
     QJsonDocument loadJson(QString fileName);
     void saveJson(QJsonDocument document, QString fileName);
     QSerialPort *serialports;
+    QSerialPort *serialports2;
+
 private slots:
     void scanSerialPorts();
-    void on_comboBox_activated(int index);
+    void on_comboBox_activated(QString index);
 
     void on_pushButton_clicked();
 
@@ -28,6 +30,8 @@ private slots:
 
     void on_pushButton_3_clicked();
     void serialreceiverr();
+
+    void on_comboBox_3_activated(const QString index);
 
 private:
     Ui::debugwindow *ui;
