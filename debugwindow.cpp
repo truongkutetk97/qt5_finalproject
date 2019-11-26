@@ -1,19 +1,16 @@
-#include "adminwindow.h"
-#include "ui_adminwindow.h"
+#include "debugwindow.h"
+#include "ui_debugwindow.h"
 #include <QMenuBar>
 #include <QStatusBar>
 #include <QDebug>
 #include <QAction>
 #include <QApplication>
 #include "mainwindow_login.h"
-adminwindow::adminwindow(QWidget *parent) :
+debugwindow::debugwindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::adminwindow)
+    ui(new Ui::debugwindow)
 {
-    QFont btnfont("Times", 20, QFont::Bold);
-
     ui->setupUi(this);
-    ui->pushButton->setFont(btnfont);
     //MENU BAR LOGOUT BLOCK
     {
     QAction * logoutaction = new QAction("LOGOUT");
@@ -31,11 +28,9 @@ adminwindow::adminwindow(QWidget *parent) :
      fileMenu->addAction(logoutaction);
     }
 
-
-
 }
 
-adminwindow::~adminwindow()
+debugwindow::~debugwindow()
 {
     delete ui;
 }

@@ -2,7 +2,7 @@
 #include "ui_mainwindow_login.h"
 #include "secondmain.h"
 #include "adminwindow.h"
-
+#include "debugwindow.h"
 MainWindow_login::MainWindow_login(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow_login)
 {
@@ -25,6 +25,12 @@ void MainWindow_login::entermainwindows()
         adminwindow *admin = new adminwindow(this);
         this->hide();
         admin->show();
+    }else
+    if(ui->lineEdit_2->text()=="debug")
+    {
+        debugwindow *debug = new debugwindow(this);
+        this->hide();
+        debug->show();
     }else
     {
         secondmain  *a = new secondmain (this);

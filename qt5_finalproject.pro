@@ -17,17 +17,20 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     adminwindow.cpp \
+    debugwindow.cpp \
     main.cpp \
     mainwindow_login.cpp \
     secondmain.cpp
 
 HEADERS += \
     adminwindow.h \
+    debugwindow.h \
     mainwindow_login.h \
     secondmain.h
 
 FORMS += \
     adminwindow.ui \
+    debugwindow.ui \
     mainwindow_login.ui \
     secondmain.ui
 

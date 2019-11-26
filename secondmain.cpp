@@ -15,6 +15,11 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonValue>
+#include <QMenuBar>
+#include <QStatusBar>
+#include <QAction>
+#include <QApplication>
+#include "mainwindow_login.h"
 static QJsonDocument   *doc =new QJsonDocument();
 static QString fn = "/home/truongdeptrai/Documents/FINALPROJECT_QT5/qt5_finalproject/test.json";
 static QJsonObject json;
@@ -28,7 +33,22 @@ secondmain::secondmain(QWidget *parent) :
 {
     ui->setupUi(this);
     this->serialports= new QSerialPort(this);
+    //MENU BAR LOGOUT BLOCK
+    {
+        QAction * logoutaction = new QAction("LOGOUT");
+        connect(logoutaction,&QAction::triggered,[=](){
+            this->hide();
+            MainWindow_login *w = new MainWindow_login();
+            w->show();
+        });
 
+        menuBar()->addMenu("File");
+        menuBar()->addMenu("Edit");
+        menuBar()->addMenu("Window");
+        menuBar()->addMenu("Settings");
+         QMenu * fileMenu =menuBar()->addMenu("Help");
+         fileMenu->addAction(logoutaction);
+    }
 
     ui->label->setMinimumWidth(100);
     ui->label->setText("Not connected");
@@ -145,6 +165,9 @@ void secondmain::serialreceiverr()
     ui->textBrowser_2->append(data);
 //    qDebug()<<data;
 }
+
+
+
 //Json block
 void secondmain::on_pushButton_clicked()
 {
