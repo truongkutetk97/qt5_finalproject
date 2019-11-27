@@ -7,7 +7,10 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
      MainWindow_login *w = new MainWindow_login();
 //    secondmain w
-    w->show();
-    w->setFixedSize(800,400 );
+//     w->setStyleSheet("QFrame {background-image :url(/*/resourcee/background2.jpg*/)}");
+
+    w->showFullScreen();
+
+//    w->setFixedSize(1366,768 );
     return a.exec();
 }
