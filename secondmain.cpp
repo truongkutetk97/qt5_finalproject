@@ -157,8 +157,27 @@ secondmain::secondmain(QWidget *parent) :
             filemenu->addAction(clear);
         }
     });
-    // Send button of serial 1 to Uno
+    // Handle menu and Send json to uno
     connect(ui->pushButton,&QPushButton::clicked,[=](){ //send
+    // Build json from menu
+        this->checkcheckbox(ui->cbx01->isChecked(),"size","1");
+        this->checkcheckbox(ui->cbx02->isChecked(),"size","2");
+        this->checkcheckbox(ui->cbx11->isChecked(),"syrup","1");
+        this->checkcheckbox(ui->cbx12->isChecked(),"syrup","2");
+        this->checkcheckbox(ui->cbx13->isChecked(),"syrup","3");
+        this->checkcheckbox(ui->cbx21->isChecked(),"toptype","1");
+        this->checkcheckbox(ui->cbx22->isChecked(),"toptype","2");
+        this->checkcheckbox(ui->cbx31->isChecked(),"toplevel","1");
+        this->checkcheckbox(ui->cbx32->isChecked(),"toplevel","2");
+        this->checkcheckbox(ui->cbx33->isChecked(),"toplevel","3");
+        this->checkcheckbox(ui->cbx41->isChecked(),"sugar","1");
+        this->checkcheckbox(ui->cbx42->isChecked(),"sugar","2");
+        this->checkcheckbox(ui->cbx43->isChecked(),"sugar","3");
+        this->checkcheckbox(ui->cbx51->isChecked(),"ice","1");
+        this->checkcheckbox(ui->cbx52->isChecked(),"ice","2");
+        this->checkcheckbox(ui->cbx53->isChecked(),"ice","3");
+
+    // Send json to uno
 //            QString command = ui->lineEdit_3->text();
             QString command;
             command +="{";
@@ -179,23 +198,20 @@ secondmain::secondmain(QWidget *parent) :
             qDebug()<<command;
             command.clear();
 
-    });
-
-    //handle menu area
-    connect(ui->pushButton_2,&QPushButton::clicked,[=](){
-//         bool a = ui->cbx12->isChecked();
-        this->checkcheckbox(ui->cbx11->isChecked(),"syrup","A");
-        this->checkcheckbox(ui->cbx12->isChecked(),"syrup","B");
-        this->checkcheckbox(ui->cbx13->isChecked(),"syrup","C");
-        this->checkcheckbox(ui->cbx21->isChecked(),"toptype","A");
-        this->checkcheckbox(ui->cbx22->isChecked(),"toptype","B");
-        this->checkcheckbox(ui->cbx31->isChecked(),"toplevel","A");
-        this->checkcheckbox(ui->cbx32->isChecked(),"toplevel","B");
-        this->checkcheckbox(ui->cbx33->isChecked(),"toplevel","C");
+            //Show in textbrowser
+                ui->textBrowser->clear();
+                *doc = loadJson(fn);
+                 json = doc->object();
+                foreach(const QString& key, json.keys()) {
+                    QJsonValue value = json.value(key);
+                    QString texttemp = key.simplified() +"="+ json.value(key).toString().simplified() ;
+                    ui->textBrowser->append(texttemp);
+                    }
 
     });
 
-    timer->start(10000);
+
+    timer->start(1000);
 }
 void secondmain::checkcheckbox(bool a, QString b, QString c)
 {
@@ -272,7 +288,7 @@ void secondmain::on_comboBox_activated(QString index)
             qDebug() <<"Error occurred: " << error;
         });
         QMessageBox m;
-        int ret = m.information(this,"Notification","Connected",QMessageBox::Close);
+        int ret = m.information(this,"Notification","Connected to "+index,QMessageBox::Close);
     }
 }
 
