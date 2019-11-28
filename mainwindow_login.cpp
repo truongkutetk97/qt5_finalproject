@@ -13,13 +13,13 @@ MainWindow_login::MainWindow_login(QWidget *parent)
     connect(ui->lineEdit,&QLineEdit::returnPressed,this,&MainWindow_login::entermainwindows);
     connect(ui->pushButton,&QPushButton::clicked,this,&MainWindow_login::entermainwindows);
     ui->pushButton->setAutoFillBackground(false);
+    ui->lineEdit->setEchoMode(QLineEdit::Password);
 //    this->setStyleSheet("background-image: url(:/resourcee/background2.jpg);");
     QPixmap pixmap;
     pixmap.load(":/resourcee/background2.jpg");
     pixmap = pixmap.scaled(1366,768, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     QPalette palette;
     palette.setBrush(QPalette::Window, pixmap);
-
     this->setPalette(palette);
 }
 
@@ -31,13 +31,13 @@ MainWindow_login::~MainWindow_login()
 void MainWindow_login::entermainwindows()
 {
 
-    if(ui->lineEdit_2->text()=="admin")
+    if(ui->lineEdit->text()=="admin")
     {
         adminwindow *admin = new adminwindow(this);
         this->hide();
         admin->show();
     }else
-    if(ui->lineEdit_2->text()=="debug")
+    if(ui->lineEdit->text()=="debug")
     {
         debugwindow *debug = new debugwindow(this);
         this->hide();

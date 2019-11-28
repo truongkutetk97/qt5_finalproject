@@ -20,11 +20,21 @@
 #include <QAction>
 #include <QApplication>
 #include "mainwindow_login.h"
+#include <QMenu>
+#include <QVBoxLayout>
+#include <QPushButton>
+#include <QLineEdit>
 static QJsonDocument   *doc =new QJsonDocument();
 static QString fn = "/home/truongdeptrai/Documents/FINALPROJECT_QT5/qt5_finalproject/test.json";
 static QJsonObject json;
 static QString portname;
+static QString portname2;
+
 static bool serialconnected = false;
+static bool serialconnected2 = false;
+static uint16_t  connectcouting= 0;
+static uint16_t  debugcouting= 1;
+
 static QByteArray serialbuffer;
 static QString serialoutput ;
 secondmain::secondmain(QWidget *parent) :
@@ -33,40 +43,122 @@ secondmain::secondmain(QWidget *parent) :
 {
     ui->setupUi(this);
     this->serialports= new QSerialPort(this);
-    //MENU BAR LOGOUT BLOCK
-    {
-        QAction * logoutaction = new QAction("LOGOUT");
-        connect(logoutaction,&QAction::triggered,[=](){
-            this->hide();
-            MainWindow_login *w = new MainWindow_login();
-            w->show();
-        });
+    this->serialports2 = new QSerialPort(this);
 
-        menuBar()->addMenu("File");
-        menuBar()->addMenu("Edit");
-        menuBar()->addMenu("Window");
-        menuBar()->addMenu("Settings");
-         QMenu * fileMenu =menuBar()->addMenu("Help");
-         fileMenu->addAction(logoutaction);
-    }
+    QPushButton *debugbtn = new QPushButton (this);
+    QAction * logoutaction = new QAction("Logout");
+    QAction * connectt = new QAction("Connect");
+    QAction * debug = new QAction("Debug");
+    QAction *readfile = new QAction("Read File");
+    QAction *addline = new QAction("Add Line");
+    QAction *clear = new QAction("Clear Text");
+    // logout button in menu bar, back to mainwindow
+    connect(logoutaction,&QAction::triggered,[=](){
+        this->hide();
+        MainWindow_login *w = new MainWindow_login();
+        w->show();
+    });
+    // file menubar block
+    connect(readfile,&QAction::triggered,[&](){
+        ui->textBrowser->clear();
+        *doc = loadJson(fn);
+         json = doc->object();
+        foreach(const QString& key, json.keys()) {
+            QJsonValue value = json.value(key);
+            QString texttemp = key.simplified() +"="+ json.value(key).toString().simplified() ;
+            ui->textBrowser->append(texttemp);
+    //        qDebug() << "Key = " << key << ", Value = " << value.toString();
+            }
+    });
+    connect(addline,&QAction::triggered,[&](){
+    });
+    connect(clear,&QAction::triggered,[&](){
+    ui->textBrowser->clear();
+    });
+    // end file menubar block
+    // debug button in menu bar
+    connect(debug,&QAction::triggered,[&](){
 
+    });
+    // Login dialog after turn on status bar
+    connect(connectt,&QAction::triggered,[=](){
+         this->ui->statusbar->hide();        connectcouting +=1;
+        QDialog dialog(this);
+        auto *layoutDialog = new QVBoxLayout(&dialog);
+        auto *lineEdit = new QLineEdit(&dialog);
+        auto *label = new QLabel(tr("Enter password to close the window:"), &dialog);
+        lineEdit->setEchoMode(QLineEdit::Password);
+        layoutDialog->addWidget(label);
+        layoutDialog->addWidget(lineEdit);
+        layoutDialog->addStretch();
+        connect(lineEdit, &QLineEdit::editingFinished, [&]() {
+            auto *label2 = new QLabel(tr("Wrong pass"), &dialog);
+            auto *label3 = new QLabel(tr("Got it!"), &dialog);
+            if(lineEdit->text()=="admin"){
+                if(connectcouting%2) this->ui->statusbar->show();
+                     layoutDialog->addWidget(label3);
+                dialog.done(lineEdit->text() == "11223344");
+            }
+            else {
+                layoutDialog->removeWidget(label2);
+                layoutDialog->addWidget(label2);
+            }
+           });
+        dialog.resize(250, 100);
+        dialog.exec();
+    });
+    // menu bar setup
+    QMenu *filemenu =  menuBar()->addMenu("File");
+    menuBar()->addMenu("Edit");
+    menuBar()->addMenu("Window");
+    menuBar()->addMenu("Settings");
+     QMenu * helpmenu =menuBar()->addMenu("Help");
+     helpmenu->addAction(logoutaction);
+     helpmenu->addAction(connectt);
+     helpmenu->addAction(debug);
+     filemenu->addAction(readfile);
+     filemenu->addAction(addline);
+     filemenu->addAction(clear);
+     // end menu bar setup
+     // UI setup
     ui->label->setMinimumWidth(100);
     ui->label->setText("Not connected");
+    debugbtn->setText("Debug UI");
     ui->statusbar->addPermanentWidget(ui->label);
     ui->statusbar->addPermanentWidget(ui->comboBox_2);
     ui->comboBox_2->addItem("9600",9600);
     ui->comboBox_2->addItem("115200",115200);
     ui->statusbar->addPermanentWidget(ui->comboBox);
-
+    ui->statusbar->addPermanentWidget(ui->comboBox_3);
+    ui->statusbar->addPermanentWidget(debugbtn);
+    //    ui->statusbar->hide();  //this should be uncomment at run mode
     QFont buttonFont("Times", 20, QFont::Bold);
     QTimer *timer = new QTimer(this);
-//    serial.open(QIODevice::ReadWrite);
-    connect(timer,SIGNAL(timeout()),this,SLOT(scanSerialPorts()));
-    connect(this->serialports,&QSerialPort::readyRead,this,&secondmain::serialreceiverr);
-    connect(ui->pushButton_6,&QPushButton::clicked,[=](){
-        ui->textBrowser_2->clear();
+    // TImer serial scan
+    connect(timer,SIGNAL(timeout()) ,this,SLOT(scanSerialPorts()));
+
+    connect(this->serialports2,&QSerialPort::readyRead,[=](){
+        QByteArray data;
+        data = this->serialports2->readAll();
     });
-    connect(ui->pushButton_4,&QPushButton::clicked,[=](){ //send
+    //connect to serial callback
+    connect(this->serialports,&QSerialPort::readyRead,this,&secondmain::serialreceiverr);
+    //button clear text browsing
+    //Debug button UI in status bar
+    connect(debugbtn, &QPushButton::clicked,[=](){
+        debugcouting++;
+        if(debugcouting%2){
+            this->ui->textBrowser->hide();
+            filemenu->clear();
+        }else {
+            this->ui->textBrowser->show();
+            filemenu->addAction(readfile);
+            filemenu->addAction(addline);
+            filemenu->addAction(clear);
+        }
+    });
+    // Send button of serial 1 to Uno
+    connect(ui->pushButton,&QPushButton::clicked,[=](){ //send
 //            QString command = ui->lineEdit_3->text();
             QString command;
             command +="{";
@@ -88,52 +180,80 @@ secondmain::secondmain(QWidget *parent) :
             command.clear();
 
     });
-    timer->start(1000);
-}
 
+    //handle menu area
+    connect(ui->pushButton_2,&QPushButton::clicked,[=](){
+//         bool a = ui->cbx12->isChecked();
+        this->checkcheckbox(ui->cbx11->isChecked(),"syrup","A");
+        this->checkcheckbox(ui->cbx12->isChecked(),"syrup","B");
+        this->checkcheckbox(ui->cbx13->isChecked(),"syrup","C");
+        this->checkcheckbox(ui->cbx21->isChecked(),"toptype","A");
+        this->checkcheckbox(ui->cbx22->isChecked(),"toptype","B");
+        this->checkcheckbox(ui->cbx31->isChecked(),"toplevel","A");
+        this->checkcheckbox(ui->cbx32->isChecked(),"toplevel","B");
+        this->checkcheckbox(ui->cbx33->isChecked(),"toplevel","C");
+
+    });
+
+    timer->start(10000);
+}
+void secondmain::checkcheckbox(bool a, QString b, QString c)
+{
+    if(a){
+    QString *k = new  QString(b);
+    QString *v = new  QString(c);
+    json[*k]=*v;
+    QJsonDocument temp(json);
+    secondmain::saveJson(temp,fn);
+    delete k;
+    delete v;
+    }
+}
 secondmain::~secondmain()
 {
     this->serialports->close();
     delete ui;
 }
 
-void secondmain::scanSerialPorts()
+void secondmain::scanSerialPorts() //playeach 1 sec
 {
-    if(1){
-    QStringList cbx;
-        foreach(const QSerialPortInfo &serialPortInfo, QSerialPortInfo::availablePorts()){
-            ui->comboBox->clear();
-            if(serialPortInfo.hasVendorIdentifier() && serialPortInfo.hasProductIdentifier()){
-                cbx.append(serialPortInfo.portName());
-             }        ui->comboBox->addItems(cbx);
-        }
-    }
+
+            qDebug()<< "Serialport1 IsReadable: " <<this->serialports->isReadable() <<"------ "
+                    << "Serialport2 IsReadable: " <<this->serialports2->isReadable()
+                    << "Serialport1 IsWriteable: " <<this->serialports->isWritable() <<"------ "
+                     <<"Serialport2 IsWriteable: " <<this->serialports2->isWritable()
+                       ;
+            QStringList cbx1;
+            QStringList cbx2;
+            if(!serialconnected)
+            {
+                foreach(const QSerialPortInfo &serialPortInfo, QSerialPortInfo::availablePorts())
+                {
+                    ui->comboBox->clear();
+                    if(serialPortInfo.hasVendorIdentifier() && serialPortInfo.hasProductIdentifier())
+                    {
+                        cbx1.append(serialPortInfo.portName());
+                    }
+                    ui->comboBox->addItems(cbx1);
+                }
+            }
+            if(!serialconnected2)
+            {
+                foreach(const QSerialPortInfo &serialPortInfo, QSerialPortInfo::availablePorts())
+                {
+                    ui->comboBox_3->clear();
+                    if(serialPortInfo.hasVendorIdentifier() && serialPortInfo.hasProductIdentifier())
+                    {
+                        cbx2.append(serialPortInfo.portName());
+                    }
+                    ui->comboBox_3->addItems(cbx2);
+                }
+            }
 }
 void secondmain::on_comboBox_activated(QString index)
 {
     qDebug()<< "abc" << index << endl;
     QString failed = "Connect failed";
-  /*  foreach(const QSerialPortInfo &serialPortInfo, QSerialPortInfo::availablePorts()){
-        if(serialPortInfo.hasVendorIdentifier() && serialPortInfo.hasProductIdentifier()){
-            if(serialPortInfo.productIdentifier()==29987)
-            {
-                QString connected = "Connected to ";
-                connected.append("CH340");
-                ui->label->setText(connected);
-                portname = serialPortInfo.portName();
-                serialconnected = true;
-            }
-            else if(serialPortInfo.productIdentifier()==60000)
-            {
-                QString connected = "Connected to ";
-                connected.append("CP210x");
-                ui->label->setText(connected);
-                portname = serialPortInfo.portName();
-                serialconnected = true;
-            }
-            else ui->label->setText(failed);
-        }
-    }*/
     portname = index;
     serialconnected=true;
     qDebug ()<<index;
@@ -160,7 +280,6 @@ void secondmain::serialreceiverr()
 {
     QByteArray data;
     data = this->serialports->readAll();
-    ui->textBrowser_2->append(data);
 //    qDebug()<<data;
 }
 
@@ -178,18 +297,18 @@ void secondmain::on_pushButton_clicked()
         QString texttemp = key.simplified() +"="+ json.value(key).toString().simplified() ;
         ui->textBrowser->append(texttemp);
 //        qDebug() << "Key = " << key << ", Value = " << value.toString();
-    }
+        }
 }
-void secondmain::on_pushButton_2_clicked()
-{
-    QString *k = new  QString(ui->lineEdit->text());
-    QString *v = new  QString(ui->lineEdit_2->text());
-    json[*k]=*v;
-    QJsonDocument temp(json);
-    secondmain::saveJson(temp,fn);
-    delete k;
-    delete v;
-}
+//void secondmain::on_pushButton_2_clicked()
+//{
+//    QString *k = new  QString();//(ui->lineEdit->text());
+//    QString *v = new  QString();//(ui->lineEdit_2->text());
+//    json[*k]=*v;
+//    QJsonDocument temp(json);
+//    secondmain::saveJson(temp,fn);
+//    delete k;
+//    delete v;
+//}
 QJsonDocument secondmain::loadJson(QString fileName) {
     QFile jsonFile(fileName);
     jsonFile.open(QFile::ReadOnly);
@@ -201,6 +320,8 @@ void secondmain::saveJson(QJsonDocument document, QString fileName) {
     jsonFile.write(document.toJson());
     qDebug() << "Added";
 }
+
+
 void secondmain::on_pushButton_3_clicked()
 {
     ui->textBrowser->clear();

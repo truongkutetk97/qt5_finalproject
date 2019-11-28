@@ -18,6 +18,8 @@ public:
     QJsonDocument loadJson(QString fileName);
     void saveJson(QJsonDocument document, QString fileName);
     QSerialPort *serialports;
+    QSerialPort *serialports2;
+    void checkcheckbox(bool a,QString b,QString c) ;
 
 private slots:
     void scanSerialPorts();
@@ -25,7 +27,7 @@ private slots:
 
     void on_pushButton_clicked();
 
-    void on_pushButton_2_clicked();
+//    void on_pushButton_2_clicked();
 
     void on_pushButton_3_clicked();
     void serialreceiverr();
