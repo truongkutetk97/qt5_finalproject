@@ -42,3 +42,6 @@ RESOURCES += \
     Resource.qrc \
 
 DISTFILES +=
+#INCLUDEPATH    += /usr/include
+#LIBS += -lwiringPi
+LIBS += -L/usr/local/lib -lwiringPi

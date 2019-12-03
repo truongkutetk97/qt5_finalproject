@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QJsonDocument>
 #include <QtSerialPort>
+
 namespace Ui {
 class secondmain;
 }
@@ -13,6 +14,8 @@ class secondmain : public QMainWindow
     Q_OBJECT
 
 public:
+
+
     explicit secondmain(QWidget *parent = nullptr);
     ~secondmain();
     QJsonDocument loadJson(QString fileName);
@@ -20,7 +23,7 @@ public:
     QSerialPort *serialports;
     QSerialPort *serialports2;
     void checkcheckbox(bool a,QString b,QString c) ;
-
+     void isr27();
 private slots:
     void scanSerialPorts();
     void on_comboBox_activated(QString index);

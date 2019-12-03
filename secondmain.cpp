@@ -24,8 +24,11 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QLineEdit>
+#include <QObject>
+#include <wiringPi.h>
 static QJsonDocument   *doc =new QJsonDocument();
-static QString fn = "/home/truongdeptrai/Documents/FINALPROJECT_QT5/qt5_finalproject/test.json";
+//static QString fn = "/home/truongdeptrai/Documents/FINALPROJECT_QT5/qt5_finalproject/test.json";
+static QString fn = "/home/pi/Desktop/qt5_finalproject/test.json";
 static QJsonObject json;
 static QString portname;
 static QString portname2;
@@ -37,10 +40,16 @@ static uint16_t  debugcouting= 1;
 
 static QByteArray serialbuffer;
 static QString serialoutput ;
+void isr231();
 secondmain::secondmain(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::secondmain)
 {
+    wiringPiSetup();
+    pinMode(1, OUTPUT);
+    pullUpDnControl(1,PUD_DOWN);
+    wiringPiISR(1,INT_EDGE_RISING,isr231);
+
     ui->setupUi(this);
     this->serialports= new QSerialPort(this);
     this->serialports2 = new QSerialPort(this);
@@ -213,6 +222,7 @@ secondmain::secondmain(QWidget *parent) :
 
     timer->start(1000);
 }
+
 void secondmain::checkcheckbox(bool a, QString b, QString c)
 {
     if(a){
@@ -225,6 +235,20 @@ void secondmain::checkcheckbox(bool a, QString b, QString c)
     delete v;
     }
 }
+
+void secondmain::isr27()
+{
+
+}
+void isr231(){
+    if(digitalRead(1)){
+        //delay(30);
+        delayMicroseconds(10000);
+        while(digitalRead(1)){}
+        qDebug()<< "frombutton";
+    }
+}
+
 secondmain::~secondmain()
 {
     this->serialports->close();
@@ -234,11 +258,11 @@ secondmain::~secondmain()
 void secondmain::scanSerialPorts() //playeach 1 sec
 {
 
-            qDebug()<< "Serialport1 IsReadable: " <<this->serialports->isReadable() <<"------ "
+         /*   qDebug()<< "Serialport1 IsReadable: " <<this->serialports->isReadable() <<"------ "
                     << "Serialport2 IsReadable: " <<this->serialports2->isReadable()
                     << "Serialport1 IsWriteable: " <<this->serialports->isWritable() <<"------ "
                      <<"Serialport2 IsWriteable: " <<this->serialports2->isWritable()
-                       ;
+                       ;*/
             QStringList cbx1;
             QStringList cbx2;
             if(!serialconnected)
