@@ -170,83 +170,7 @@ secondmain::secondmain(QWidget *parent) :
     QTimer *scanbutton = new QTimer(this);
     // TImer serial scan
     connect(timer,SIGNAL(timeout()) ,this,SLOT(scanSerialPorts()));
-    connect(scanbutton,&QTimer::timeout,[&](){
-        switch (readbutton) {
-        case 0:
-            ui->label_10->setText("No button");
-            break;
-        case 1:
-            ui->label_10->setText("1 button");
-            break;
-        case 2:
-            ui->label_10->setText("2 button");
-            break;
-        case 3:
-            ui->label_10->setText("3 button");
-            break;
-        case 4:
-            ui->label_10->setText("4 button");
-            break;
-        case 5:
-            ui->label_10->setText("5 button");
-            break;
-        }
-        if(ispush){
-            qDebug()<<columnmenu;
-            switch (columnmenu) {
-                case 1:
-//                switch (readbutton) {
-//                    case 1: ui->cbx01->setFont(buttonFont); break;
-//                    case 2: ui->cbx02->setFont(buttonFont);break;
-//                }
-                break;
-                case 2:
-//                switch (readbutton) {
-//                    case 1: ui->cbx11->setFont(buttonFont); break;
-//                    case 2: ui->cbx12->setFont(buttonFont);break;
-//                    case 3: ui->cbx13->setFont(buttonFont);break;
-//                }
-                break;
-                case 3:
-//                switch (readbutton) {
-//                    case 1: ui->cbx21->setFont(buttonFont); break;
-//                    case 2: ui->cbx22->setFont(buttonFont);break;
-//                }
-                    break;
-                case 4:
-//                switch (readbutton) {
-//                    case 1: ui->cbx31->setFont(buttonFont); break;
-//                    case 2: ui->cbx32->setFont(buttonFont);break;
-//                    case 3: ui->cbx32->setFont(buttonFont);break;
-
-//                }
-                    break;
-                case 5:
-//                switch (readbutton) {
-//                    case 1: ui->cbx41->setFont(buttonFont); break;
-//                    case 2: ui->cbx42->setFont(buttonFont);break;
-//                    case 3: ui->cbx42->setFont(buttonFont);break;
-
-//                }
-                    break;
-                case 6:
-//                switch (readbutton) {
-//                    case 1: ui->cbx51->setFont(buttonFont); break;
-//                    case 2: ui->cbx52->setFont(buttonFont);break;
-//                    case 3: ui->cbx52->setFont(buttonFont);break;
-
-//                }
-                    break;
-                }
-            if ((columnmenu>=1)&&(columnmenu<5)){
-                columnmenu ++;
-
-            }else columnmenu = 1;
-             readbutton = 0;
-            ispush = false;
-        }
-
-    });
+    connect(scanbutton,&QTimer::timeout,this,&secondmain::scanbutton);
     connect(this->serialports2,&QSerialPort::readyRead,[=](){
         QByteArray data;
         data = this->serialports2->readAll();
@@ -324,7 +248,42 @@ secondmain::secondmain(QWidget *parent) :
     timer->start(1000);
     scanbutton->start(100);
 }
+void secondmain::scanbutton(){
+            if(ispush){
+                if (columnmenu==1){
+                    switch (readbutton) {
+                    case 1:    ui->cbx01->setText("abc");    break;
+                    }
+                }
+    //            if (columnmenu==2){
+    //                switch (readbutton) {
+    //                case 1:  ui->cbx11->setFont(buttonFont);  break;
+    //                case 2:  ui->cbx12->setFont(buttonFont);  break;
+    //                case 3:  ui->cbx13->setFont(buttonFont);  break;
+    //                }
+    //            }
+    //            if (columnmenu==3){
+    //                switch (readbutton) {
+    //                case 1:  ui->cbx21->setFont(buttonFont);  break;
+    //                case 2:  ui->cbx22->setFont(buttonFont);  break;
+    //                }
+    //            }
+    //            if(columnmenu==4){
+    //                switch(readbutton){
+    //                case 1:  ui->cbx31->setFont(buttonFont);  break;
+    //                case 2:  ui->cbx32->setFont(buttonFont);  break;
+    //                case 3:  ui->cbx33->setFont(buttonFont);  break;
+    //                }
+    //            }
+                qDebug()<<columnmenu;
+                if ((columnmenu>=1)&&(columnmenu<5)){
+                    columnmenu ++;
 
+                }else columnmenu = 1;
+                 readbutton = 0;
+                ispush = false;
+            }
+}
 void secondmain::checkcheckbox(bool a, QString b, QString c)
 {
     if(a){

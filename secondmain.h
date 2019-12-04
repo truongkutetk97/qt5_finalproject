@@ -25,6 +25,7 @@ public:
     void checkcheckbox(bool a,QString b,QString c) ;
      void isr27();
 private slots:
+    void scanbutton();
     void scanSerialPorts();
     void on_comboBox_activated(QString index);
 
