@@ -43,10 +43,14 @@ static bool serialconnected2 = false;
 static uint16_t  connectcouting= 0;
 static uint16_t  debugcouting= 1;
 static uint8_t readbutton = 0;
-static uint8_t columnmenu = 1;
+static uint8_t columnmenu = 0;
 static bool ispush = false;
 static QByteArray serialbuffer;
 static QString serialoutput ;
+static QFont buttonFont("Times", 14, QFont::Bold);
+static QFont choosedfont("Times", 16, QFont::Bold);
+static QFont normalfont("Sans Serif", 9);
+
 void isr231();
 void isr232();
 void isr233();
@@ -164,8 +168,8 @@ secondmain::secondmain(QWidget *parent) :
     ui->statusbar->addPermanentWidget(ui->comboBox);
     ui->statusbar->addPermanentWidget(ui->comboBox_3);
     ui->statusbar->addPermanentWidget(debugbtn);
+    ui->textBrowser->hide();
     //    ui->statusbar->hide();  //this should be uncomment at run mode
-    QFont buttonFont("Times", 20, QFont::Bold);
     QTimer *timer = new QTimer(this);
     QTimer *scanbutton = new QTimer(this);
     // TImer serial scan
@@ -250,36 +254,101 @@ secondmain::secondmain(QWidget *parent) :
 }
 void secondmain::scanbutton(){
             if(ispush){
+                if(ui->label_10->text()=="PLEASE WAIT A SECOND!"){
+                    ui->label_10->setText("THANKS!");
+                }
+                if((readbutton==5)&&(columnmenu==7)){
+                    ui->label_10->setText("PLEASE WAIT A SECOND!");
+                    ui->cbx01->setFont(normalfont);
+                    ui->cbx02->setFont(normalfont);
+                    ui->cbx11->setFont(normalfont);
+                    ui->cbx12->setFont(normalfont);
+                    ui->cbx13->setFont(normalfont);
+                    ui->cbx21->setFont(normalfont);
+                    ui->cbx22->setFont(normalfont);
+                    ui->cbx31->setFont(normalfont);
+                    ui->cbx32->setFont(normalfont);
+                    ui->cbx33->setFont(normalfont);
+                    ui->cbx41->setFont(normalfont);
+                    ui->cbx42->setFont(normalfont);
+                    ui->cbx43->setFont(normalfont);
+                    ui->cbx51->setFont(normalfont);
+                    ui->cbx52->setFont(normalfont);
+                    ui->cbx53->setFont(normalfont);
+                }
                 if (columnmenu==1){
+                    ui->label_10->setText("PLEASE CHOOSE SYRUP TYPTE!");
                     switch (readbutton) {
-                    case 1:    ui->cbx01->setText("abc");    break;
+                    case 1:    ui->cbx01->setFont(choosedfont); break;
+                    case 2:    ui->cbx02->setFont(choosedfont); break;
                     }
                 }
-    //            if (columnmenu==2){
-    //                switch (readbutton) {
-    //                case 1:  ui->cbx11->setFont(buttonFont);  break;
-    //                case 2:  ui->cbx12->setFont(buttonFont);  break;
-    //                case 3:  ui->cbx13->setFont(buttonFont);  break;
-    //                }
-    //            }
-    //            if (columnmenu==3){
-    //                switch (readbutton) {
-    //                case 1:  ui->cbx21->setFont(buttonFont);  break;
-    //                case 2:  ui->cbx22->setFont(buttonFont);  break;
-    //                }
-    //            }
-    //            if(columnmenu==4){
-    //                switch(readbutton){
-    //                case 1:  ui->cbx31->setFont(buttonFont);  break;
-    //                case 2:  ui->cbx32->setFont(buttonFont);  break;
-    //                case 3:  ui->cbx33->setFont(buttonFont);  break;
-    //                }
-    //            }
+                if (columnmenu==2){
+                    ui->label_10->setText("PLEASE CHOOSE TOPPING TYPTE!");
+                    switch (readbutton) {
+                    case 1:    ui->cbx11->setFont(choosedfont); break;
+                    case 2:    ui->cbx12->setFont(choosedfont); break;
+                    case 3:    ui->cbx13->setFont(choosedfont); break;
+                    }
+                }
+                if (columnmenu==3){
+                    ui->label_10->setText("PLEASE CHOOSE TOPPING LEVEL!");
+                    switch (readbutton) {
+                    case 1:    ui->cbx21->setFont(choosedfont); break;
+                    case 2:    ui->cbx22->setFont(choosedfont); break;
+                    }
+                }
+                if (columnmenu==4){
+                    ui->label_10->setText("PLEASE CHOOSE SUGAR LEVEL!");
+                    switch (readbutton) {
+                    case 1:    ui->cbx31->setFont(choosedfont); break;
+                    case 2:    ui->cbx32->setFont(choosedfont); break;
+                    case 3:    ui->cbx33->setFont(choosedfont); break;
+                    }
+                }
+                if (columnmenu==5){
+                    ui->label_10->setText("PLEASE CHOOSE ICE LEVEL!");
+                    switch (readbutton) {
+                    case 1:    ui->cbx41->setFont(choosedfont); break;
+                    case 2:    ui->cbx42->setFont(choosedfont); break;
+                    case 3:    ui->cbx43->setFont(choosedfont); break;
+                    }
+                }
+                if (columnmenu==6){
+                    ui->label_10->setText("TOTAL: 3000$!");
+                    switch (readbutton) {
+                    case 1:    ui->cbx51->setFont(choosedfont); break;
+                    case 2:    ui->cbx52->setFont(choosedfont); break;
+                    case 3:    ui->cbx53->setFont(choosedfont); break;
+                    }
+                }
                 qDebug()<<columnmenu;
-                if ((columnmenu>=1)&&(columnmenu<5)){
+                if ((columnmenu>=1)&&(columnmenu<=6)&&(readbutton!=4)&&(readbutton!=5)){
                     columnmenu ++;
-
-                }else columnmenu = 1;
+                }
+                if((readbutton==4)&&(columnmenu==0)){
+                    ui->label_10->setText("PLEASE CHOOSE SIZE!");
+                    columnmenu++;
+                    ui->pushButton_2->setText("CLEAR");
+                }else if((readbutton==4)&&(columnmenu=!0)) {
+                    columnmenu=0;
+                    ui->cbx01->setFont(normalfont);
+                    ui->cbx02->setFont(normalfont);
+                    ui->cbx11->setFont(normalfont);
+                    ui->cbx12->setFont(normalfont);
+                    ui->cbx13->setFont(normalfont);
+                    ui->cbx21->setFont(normalfont);
+                    ui->cbx22->setFont(normalfont);
+                    ui->cbx31->setFont(normalfont);
+                    ui->cbx32->setFont(normalfont);
+                    ui->cbx33->setFont(normalfont);
+                    ui->cbx41->setFont(normalfont);
+                    ui->cbx42->setFont(normalfont);
+                    ui->cbx43->setFont(normalfont);
+                    ui->cbx51->setFont(normalfont);
+                    ui->cbx52->setFont(normalfont);
+                    ui->cbx53->setFont(normalfont);
+                }
                  readbutton = 0;
                 ispush = false;
             }
