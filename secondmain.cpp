@@ -26,6 +26,11 @@
 #include <QLineEdit>
 #include <QObject>
 #include <wiringPi.h>
+#define button1 = 21
+#define button2 = 22
+#define button3 = 23
+#define button4 = 24
+#define button5 = 25
 static QJsonDocument   *doc =new QJsonDocument();
 //static QString fn = "/home/truongdeptrai/Documents/FINALPROJECT_QT5/qt5_finalproject/test.json";
 static QString fn = "/home/pi/Desktop/qt5_finalproject/test.json";
@@ -37,18 +42,37 @@ static bool serialconnected = false;
 static bool serialconnected2 = false;
 static uint16_t  connectcouting= 0;
 static uint16_t  debugcouting= 1;
-
+static uint8_t readbutton = 0;
+static uint8_t columnmenu = 1;
+static bool ispush = false;
 static QByteArray serialbuffer;
 static QString serialoutput ;
 void isr231();
+void isr232();
+void isr233();
+void isr234();
+void isr235();
 secondmain::secondmain(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::secondmain)
 {
     wiringPiSetup();
-    pinMode(1, OUTPUT);
-    pullUpDnControl(1,PUD_DOWN);
-    wiringPiISR(1,INT_EDGE_RISING,isr231);
+    pinMode(21, OUTPUT);
+    pinMode(22, OUTPUT);
+    pinMode(23, OUTPUT);
+    pinMode(24, OUTPUT);
+    pinMode(25, OUTPUT);
+    pullUpDnControl(21,PUD_DOWN);
+    pullUpDnControl(22,PUD_DOWN);
+    pullUpDnControl(23,PUD_DOWN);
+    pullUpDnControl(24,PUD_DOWN);
+    pullUpDnControl(25,PUD_DOWN);
+    wiringPiISR(21,INT_EDGE_RISING,isr231);
+    wiringPiISR(22,INT_EDGE_RISING,isr232);
+    wiringPiISR(23,INT_EDGE_RISING,isr233);
+    wiringPiISR(24,INT_EDGE_RISING,isr234);
+    wiringPiISR(25,INT_EDGE_RISING,isr235);
+
 
     ui->setupUi(this);
     this->serialports= new QSerialPort(this);
@@ -143,9 +167,86 @@ secondmain::secondmain(QWidget *parent) :
     //    ui->statusbar->hide();  //this should be uncomment at run mode
     QFont buttonFont("Times", 20, QFont::Bold);
     QTimer *timer = new QTimer(this);
+    QTimer *scanbutton = new QTimer(this);
     // TImer serial scan
     connect(timer,SIGNAL(timeout()) ,this,SLOT(scanSerialPorts()));
+    connect(scanbutton,&QTimer::timeout,[&](){
+        switch (readbutton) {
+        case 0:
+            ui->label_10->setText("No button");
+            break;
+        case 1:
+            ui->label_10->setText("1 button");
+            break;
+        case 2:
+            ui->label_10->setText("2 button");
+            break;
+        case 3:
+            ui->label_10->setText("3 button");
+            break;
+        case 4:
+            ui->label_10->setText("4 button");
+            break;
+        case 5:
+            ui->label_10->setText("5 button");
+            break;
+        }
+        if(ispush){
+            qDebug()<<columnmenu;
+            switch (columnmenu) {
+                case 1:
+//                switch (readbutton) {
+//                    case 1: ui->cbx01->setFont(buttonFont); break;
+//                    case 2: ui->cbx02->setFont(buttonFont);break;
+//                }
+                break;
+                case 2:
+//                switch (readbutton) {
+//                    case 1: ui->cbx11->setFont(buttonFont); break;
+//                    case 2: ui->cbx12->setFont(buttonFont);break;
+//                    case 3: ui->cbx13->setFont(buttonFont);break;
+//                }
+                break;
+                case 3:
+//                switch (readbutton) {
+//                    case 1: ui->cbx21->setFont(buttonFont); break;
+//                    case 2: ui->cbx22->setFont(buttonFont);break;
+//                }
+                    break;
+                case 4:
+//                switch (readbutton) {
+//                    case 1: ui->cbx31->setFont(buttonFont); break;
+//                    case 2: ui->cbx32->setFont(buttonFont);break;
+//                    case 3: ui->cbx32->setFont(buttonFont);break;
 
+//                }
+                    break;
+                case 5:
+//                switch (readbutton) {
+//                    case 1: ui->cbx41->setFont(buttonFont); break;
+//                    case 2: ui->cbx42->setFont(buttonFont);break;
+//                    case 3: ui->cbx42->setFont(buttonFont);break;
+
+//                }
+                    break;
+                case 6:
+//                switch (readbutton) {
+//                    case 1: ui->cbx51->setFont(buttonFont); break;
+//                    case 2: ui->cbx52->setFont(buttonFont);break;
+//                    case 3: ui->cbx52->setFont(buttonFont);break;
+
+//                }
+                    break;
+                }
+            if ((columnmenu>=1)&&(columnmenu<5)){
+                columnmenu ++;
+
+            }else columnmenu = 1;
+             readbutton = 0;
+            ispush = false;
+        }
+
+    });
     connect(this->serialports2,&QSerialPort::readyRead,[=](){
         QByteArray data;
         data = this->serialports2->readAll();
@@ -221,6 +322,7 @@ secondmain::secondmain(QWidget *parent) :
 
 
     timer->start(1000);
+    scanbutton->start(100);
 }
 
 void secondmain::checkcheckbox(bool a, QString b, QString c)
@@ -241,11 +343,48 @@ void secondmain::isr27()
 
 }
 void isr231(){
-    if(digitalRead(1)){
+    if(digitalRead(21)){
         //delay(30);
         delayMicroseconds(10000);
-        while(digitalRead(1)){}
-        qDebug()<< "frombutton";
+        while(digitalRead(21)){}
+        qDebug()<< "frombutton 21 ";
+        readbutton = 1;ispush =true;
+    }
+}
+void isr232(){
+    if(digitalRead(22)){
+        //delay(30);
+        delayMicroseconds(10000);
+        while(digitalRead(22)){}
+        readbutton = 2;ispush =true;
+        qDebug()<< "frombutton 22 ";
+    }
+}
+void isr233(){
+    if(digitalRead(23)){
+        //delay(30);
+        delayMicroseconds(10000);
+        while(digitalRead(23)){}
+        readbutton = 3;ispush =true;
+        qDebug()<< "frombutton  23 ";
+    }
+}
+void isr234(){
+    if(digitalRead(24)){
+        //delay(30);
+        delayMicroseconds(10000);
+        while(digitalRead(24)){}
+        readbutton = 5;ispush =true;
+        qDebug()<< "frombutton  25 ";
+    }
+}
+void isr235(){
+    if(digitalRead(25)){
+        //delay(30);
+        delayMicroseconds(10000);
+        while(digitalRead(25)){}
+        readbutton = 4;ispush =true;
+        qDebug()<< "frombutton  24 ";
     }
 }
 
