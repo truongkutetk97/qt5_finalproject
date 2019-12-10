@@ -25,7 +25,7 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QObject>
-#include <wiringPi.h>
+//#include <wiringPi.h>
 #define button1 = 21
 #define button2 = 22
 #define button3 = 23
@@ -60,22 +60,22 @@ secondmain::secondmain(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::secondmain)
 {
-    wiringPiSetup();
-    pinMode(21, OUTPUT);
-    pinMode(22, OUTPUT);
-    pinMode(23, OUTPUT);
-    pinMode(24, OUTPUT);
-    pinMode(25, OUTPUT);
-    pullUpDnControl(21,PUD_DOWN);
-    pullUpDnControl(22,PUD_DOWN);
-    pullUpDnControl(23,PUD_DOWN);
-    pullUpDnControl(24,PUD_DOWN);
-    pullUpDnControl(25,PUD_DOWN);
-    wiringPiISR(21,INT_EDGE_RISING,isr231);
-    wiringPiISR(22,INT_EDGE_RISING,isr232);
-    wiringPiISR(23,INT_EDGE_RISING,isr233);
-    wiringPiISR(24,INT_EDGE_RISING,isr234);
-    wiringPiISR(25,INT_EDGE_RISING,isr235);
+//    wiringPiSetup();
+//    pinMode(21, OUTPUT);
+//    pinMode(22, OUTPUT);
+//    pinMode(23, OUTPUT);
+//    pinMode(24, OUTPUT);
+//    pinMode(25, OUTPUT);
+//    pullUpDnControl(21,PUD_DOWN);
+//    pullUpDnControl(22,PUD_DOWN);
+//    pullUpDnControl(23,PUD_DOWN);
+//    pullUpDnControl(24,PUD_DOWN);
+//    pullUpDnControl(25,PUD_DOWN);
+//    wiringPiISR(21,INT_EDGE_RISING,isr231);
+//    wiringPiISR(22,INT_EDGE_RISING,isr232);
+//    wiringPiISR(23,INT_EDGE_RISING,isr233);
+//    wiringPiISR(24,INT_EDGE_RISING,isr234);
+//    wiringPiISR(25,INT_EDGE_RISING,isr235);
 
 
     ui->setupUi(this);
@@ -370,51 +370,51 @@ void secondmain::isr27()
 {
 
 }
-void isr231(){
-    if(digitalRead(21)){
-        //delay(30);
-        delayMicroseconds(10000);
-        while(digitalRead(21)){}
-        qDebug()<< "frombutton 21 ";
-        readbutton = 1;ispush =true;
-    }
-}
-void isr232(){
-    if(digitalRead(22)){
-        //delay(30);
-        delayMicroseconds(10000);
-        while(digitalRead(22)){}
-        readbutton = 2;ispush =true;
-        qDebug()<< "frombutton 22 ";
-    }
-}
-void isr233(){
-    if(digitalRead(23)){
-        //delay(30);
-        delayMicroseconds(10000);
-        while(digitalRead(23)){}
-        readbutton = 3;ispush =true;
-        qDebug()<< "frombutton  23 ";
-    }
-}
-void isr234(){
-    if(digitalRead(24)){
-        //delay(30);
-        delayMicroseconds(10000);
-        while(digitalRead(24)){}
-        readbutton = 5;ispush =true;
-        qDebug()<< "frombutton  25 ";
-    }
-}
-void isr235(){
-    if(digitalRead(25)){
-        //delay(30);
-        delayMicroseconds(10000);
-        while(digitalRead(25)){}
-        readbutton = 4;ispush =true;
-        qDebug()<< "frombutton  24 ";
-    }
-}
+//void isr231(){
+//    if(digitalRead(21)){
+//        //delay(30);
+//        delayMicroseconds(10000);
+//        while(digitalRead(21)){}
+//        qDebug()<< "frombutton 21 ";
+//        readbutton = 1;ispush =true;
+//    }
+//}
+//void isr232(){
+//    if(digitalRead(22)){
+//        //delay(30);
+//        delayMicroseconds(10000);
+//        while(digitalRead(22)){}
+//        readbutton = 2;ispush =true;
+//        qDebug()<< "frombutton 22 ";
+//    }
+//}
+//void isr233(){
+//    if(digitalRead(23)){
+//        //delay(30);
+//        delayMicroseconds(10000);
+//        while(digitalRead(23)){}
+//        readbutton = 3;ispush =true;
+//        qDebug()<< "frombutton  23 ";
+//    }
+//}
+//void isr234(){
+//    if(digitalRead(24)){
+//        //delay(30);
+//        delayMicroseconds(10000);
+//        while(digitalRead(24)){}
+//        readbutton = 5;ispush =true;
+//        qDebug()<< "frombutton  25 ";
+//    }
+//}
+//void isr235(){
+//    if(digitalRead(25)){
+//        //delay(30);
+//        delayMicroseconds(10000);
+//        while(digitalRead(25)){}
+//        readbutton = 4;ispush =true;
+//        qDebug()<< "frombutton  24 ";
+//    }
+//}
 
 secondmain::~secondmain()
 {
