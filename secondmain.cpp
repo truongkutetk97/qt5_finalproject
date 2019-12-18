@@ -58,6 +58,7 @@ static QFont buttonFont("Sans Serif", 14, QFont::Bold);
 static QFont choosedfont("Sans Serif", 26, QFont::Bold);
 static QFont normalfont("Sans Serif", 19);
 static QTimer *checkouttimer = new QTimer();
+static uint8_t buttonbuffer[7];
 
 void isr231();
 void isr232();
@@ -259,14 +260,14 @@ void secondmain::scanbutton(){
                     columnmenu = 1;
                 }
                 qDebug()<<columnmenu;
-                if(readbutton==5){
+                if((readbutton==5)&&(!isorderdone)){
                     checkouttimer->start(5);
                     columnmenu = 0;
                 }
                 if (columnmenu==1){
                     columnmenu ++;
                     ui->label_10->setText("MỜI QUÝ KHÁCH CHỌN");
-                    ui->label_2->setText("Trà sữa: ");
+                    ui->label_2->setText("Trà sữa   : ");
                     ui->label_4->setText("Thành tiền:");
                     QString temp1 = QString::number(total,'f',2);
                     ui->label_5->setText(temp1);
@@ -289,9 +290,9 @@ void secondmain::scanbutton(){
                     receipt.clear();
                     receipt.append("Size ")                    ;
                     switch (readbutton) {
-                    case 2:    {       total+= 20000; receipt.append("L "); break;  }
-                    case 3:    {       total+= 25000; receipt.append("XL "); break; }
-                    case 4:    {       total+= 30000; receipt.append("XXL "); break; }
+                    case 2:    {       total+= 20000; receipt.append("L "); buttonbuffer[0] = 1; break;  }
+                    case 3:    {       total+= 25000; receipt.append("XL "); buttonbuffer[0] = 2; break; }
+                    case 4:    {       total+= 30000; receipt.append("XXL "); buttonbuffer[0] = 3; break; }
                     }
                     QLocale locale ;
                     QString temp1 = locale.toString(total,'f',2);
@@ -307,16 +308,16 @@ void secondmain::scanbutton(){
                     ui->label_13->setText("");
                     receipt.append(", Vị ")                    ;
                     switch (readbutton) {
-                    case 2:     total+=5000; receipt.append("Caramel "); break;
-                    case 3:     total+=6000; receipt.append("Chocolate "); break;
-                    case 4:     total+=7000; receipt.append("Ô long "); break;
+                    case 2:     total+=5000; receipt.append("Caramel "); buttonbuffer[1] = 1; break;
+                    case 3:     total+=6000; receipt.append("Chocolate "); buttonbuffer[1] = 2;break;
+                    case 4:     total+=7000; receipt.append("Ô long ");buttonbuffer[1] = 3; break;
                     }
                     QLocale locale ;
                     QString temp1 = locale.toString(total,'f',2);
                     ui->label_5->setText(temp1);
                     ui->label_3->setText(receipt);
                 }else
-                if ((columnmenu==4)&&(readbutton!=1)){
+                if ((columnmenu==4)&&(readbutton!=1)&&(readbutton!=4)){
                     columnmenu ++;
                     ui->label_14->setText("LƯỢNG THẠCH !");
                     ui->label_11->setText("Ít");
@@ -324,8 +325,8 @@ void secondmain::scanbutton(){
                     ui->label_13->setText("Nhiều");
                     receipt.append(", Thạch ")                    ;
                     switch (readbutton) {
-                    case 2:     total+=5000; receipt.append("Pudding "); break;
-                    case 3:     total+=6000; receipt.append("Đậu đỏ "); break;
+                    case 2:     total+=5000; receipt.append("Pudding "); buttonbuffer[2] = 1;break;
+                    case 3:     total+=6000; receipt.append("Đậu đỏ "); buttonbuffer[2] = 2;break;
                     }
                     QLocale locale ;
                     QString temp1 = locale.toString(total,'f',2);
@@ -340,9 +341,9 @@ void secondmain::scanbutton(){
                     ui->label_13->setText("Nhiều");
                     receipt.append(", ")                    ;
                     switch (readbutton) {
-                    case 2:    total+=5000; receipt.append("Ít "); break;
-                    case 3:    total+=7000; receipt.append("Vừa "); break;
-                    case 4:    total+=10000; receipt.append("Nhiều "); break;
+                    case 2:    total+=5000; receipt.append("Ít ");buttonbuffer[3] = 1; break;
+                    case 3:    total+=7000; receipt.append("Vừa ");buttonbuffer[3] = 2; break;
+                    case 4:    total+=10000; receipt.append("Nhiều ");buttonbuffer[3] = 3; break;
                     }
                     QLocale locale ;
                     QString temp1 = locale.toString(total,'f',2);
@@ -357,9 +358,9 @@ void secondmain::scanbutton(){
                     ui->label_12->setText("Vừa");
                     ui->label_13->setText("Nhiều");
                     switch (readbutton) {
-                    case 2:     receipt.append("Ít "); break;
-                    case 3:     receipt.append("Vừa "); break;
-                    case 4:     receipt.append("Nhiều "); break;
+                    case 2:     receipt.append("Ít ");buttonbuffer[4] = 1; break;
+                    case 3:     receipt.append("Vừa "); buttonbuffer[4] = 2;break;
+                    case 4:     receipt.append("Nhiều "); buttonbuffer[4] = 3;break;
                     }
                     receipt.append("đường, ")                    ;
                     ui->label_3->setText(receipt);
@@ -377,64 +378,78 @@ void secondmain::scanbutton(){
                         ui->label_12->setText(temp1);
                         ui->label_13->setText("");
                         switch (readbutton) {
-                        case 2:     receipt.append("Ít "); break;
-                        case 3:     receipt.append("Vừa "); break;
-                        case 4:     receipt.append("Nhiều "); break;
+                        case 2:     receipt.append("Ít "); buttonbuffer[5] = 1;break;
+                        case 3:     receipt.append("Vừa "); buttonbuffer[5] = 2;break;
+                        case 4:     receipt.append("Nhiều ");buttonbuffer[5] = 3; break;
                         }
                         receipt.append("đá.")                    ;
                         ui->label_3->setText(receipt);
                  }else
                     //Checkout btn pressed
                     if((readbutton==1)&&(isorderdone)){
-                        checkouttimer->start(3000);
-                        isorderdone = false;
                         ui->label_10->setText("MỜI QUÝ KHÁCH TÍNH TIỀN");
                         ui->label_14->setText("VÀ ĐỢI TRONG GIÂY LÁT!");
                         // Build json from menu
-
+                        switch (buttonbuffer[0]){
+                        case 1: this->checkcheckbox(1,"size","1"); break;
+                        case 2: this->checkcheckbox(1,"size","2"); break;
+                        case 3: this->checkcheckbox(1,"size","3"); break;
+                        }
+                        switch (buttonbuffer[1]){
+                        case 1: this->checkcheckbox(1,"syrup","1"); break;
+                        case 2: this->checkcheckbox(1,"syrup","2"); break;
+                        case 3: this->checkcheckbox(1,"syrup","3"); break;
+                        }
+                        switch (buttonbuffer[2]){
+                        case 1: this->checkcheckbox(1,"toptype","1"); break;
+                        case 2: this->checkcheckbox(1,"toptype","2"); break;
+                        case 3: this->checkcheckbox(1,"toptype","3"); break;
+                        }
+                        switch (buttonbuffer[3]){
+                        case 1: this->checkcheckbox(1,"toplevel","1"); break;
+                        case 2: this->checkcheckbox(1,"toplevel","2"); break;
+                        case 3: this->checkcheckbox(1,"toplevel","3"); break;
+                        }
+                        switch (buttonbuffer[4]){
+                        case 1: this->checkcheckbox(1,"sugar","1"); break;
+                        case 2: this->checkcheckbox(1,"sugar","2"); break;
+                        case 3: this->checkcheckbox(1,"sugar","3"); break;
+                        }
+                        switch (buttonbuffer[5]){
+                        case 1: this->checkcheckbox(1,"ice","1"); break;
+                        case 2: this->checkcheckbox(1,"ice","2"); break;
+                        case 3: this->checkcheckbox(1,"ice","3"); break;
+                        }
                         // Send json to uno
                     //            QString command = ui->lineEdit_3->text();
-                                QString command;
-                                command +="{";
-                                QJsonDocument a = loadJson(fn);
-                                QJsonObject b = a.object();
-                                uint8_t indexx = 1;
-                                foreach(const QString& key, b.keys()) {
-                                    QJsonValue value1 = b.value(key);
-                                    QString texttemp = key.simplified() +"="+ b.value(key).toString().simplified() ;
-                                    command = command + "\"" +key.simplified() +"\"" +":"
-                                                         "\"" ;command +=b.value(key).toString();command+= "\"" ;
-                                    if(indexx!=b.keys().length())command= command +",";
-                                    indexx++;
-                                }
-                                command +="}";
-                                command.append("@");
-                                this->serialports->write(command.toUtf8());
-                                qDebug()<<command;
-                                command.clear();
+                        QString command;
+                        command +="{";
+                        QJsonDocument a = loadJson(fn);
+                        QJsonObject b = a.object();
+                        uint8_t indexx = 1;
+                        foreach(const QString& key, b.keys()) {
+                            QJsonValue value1 = b.value(key);
+                            QString texttemp = key.simplified() +"="+ b.value(key).toString().simplified() ;
+                            command = command + "\"" +key.simplified() +"\"" +":"
+                                                 "\"" ;command +=b.value(key).toString();command+= "\"" ;
+                            if(indexx!=b.keys().length())command= command +",";
+                            indexx++;
+                        }
+                        command +="}";
+                        command.append("@");
+                        this->serialports->write(command.toUtf8());
+                        qDebug()<<command;
+                        command.clear();
 
-                                //Show in textbrowser
-                                    *doc = loadJson(fn);
-                                     json = doc->object();
-                                    foreach(const QString& key, json.keys()) {
-                                        QJsonValue value = json.value(key);
-                                        QString texttemp = key.simplified() +"="+ json.value(key).toString().simplified() ;
-                                        }
+                        //Show in textbrowser
+                        *doc = loadJson(fn);
+                         json = doc->object();
+                        foreach(const QString& key, json.keys()) {
+                            QJsonValue value = json.value(key);
+                            QString texttemp = key.simplified() +"="+ json.value(key).toString().simplified() ;
+                            }
                     }
-
-//                if ((columnmenu>=1)&&(columnmenu<=6)&&(readbutton!=4)&&(readbutton!=5)){
-//                    columnmenu ++;
-//                }
-//                if((readbutton==4)&&(columnmenu==0)){
-//                    ui->label_10->setText("PLEASE CHOOSE SIZE!");
-//                    columnmenu++;
-//                }else if((readbutton==4)&&(columnmenu=!0)) {
-//                    columnmenu=0;
-//                    ui->cbx01->setFont(normalfont);
-
-//                }
-
-                 readbutton = 0;
+                readbutton = 0;
                 ispush = false;
             }
 }
@@ -515,8 +530,6 @@ void secondmain::scanSerialPorts() //playeach 1 sec
                     << "Serialport1 IsWriteable: " <<this->serialports->isWritable() <<"------ "
                      <<"Serialport2 IsWriteable: " <<this->serialports2->isWritable()
                        ;*/
-            QStringList cbx1;
-            QStringList cbx2;
             if(!serialconnected)
             {
                 foreach(const QSerialPortInfo &serialPortInfo, QSerialPortInfo::availablePorts())
@@ -524,21 +537,26 @@ void secondmain::scanSerialPorts() //playeach 1 sec
                     ui->comboBox->clear();
                     if(serialPortInfo.hasVendorIdentifier() && serialPortInfo.hasProductIdentifier())
                     {
-                        cbx1.append(serialPortInfo.portName());
+                        portname = serialPortInfo.portName();
                     }
-                    ui->comboBox->addItems(cbx1);
                 }
             }
-            if(!serialconnected2)
-            {
-                foreach(const QSerialPortInfo &serialPortInfo, QSerialPortInfo::availablePorts())
-                {
-                    ui->comboBox_3->clear();
-                    if(serialPortInfo.hasVendorIdentifier() && serialPortInfo.hasProductIdentifier())
-                    {
-                        cbx2.append(serialPortInfo.portName());
-                    }
-                    ui->comboBox_3->addItems(cbx2);
+            if(!serialconnected){
+                this->serialports->setPortName(portname);
+                this->serialports->open(QIODevice::ReadWrite);
+                this->serialports->setBaudRate(QSerialPort::Baud115200);
+                this->serialports->setDataBits(QSerialPort::Data8);
+                this->serialports->setParity(QSerialPort::NoParity);
+                this->serialports->setStopBits(QSerialPort::OneStop);
+                this->serialports->setFlowControl(QSerialPort::NoFlowControl);
+
+                qDebug() << "Serialconnected" <<endl;
+                connect(this->serialports,&QSerialPort::errorOccurred,[=](QSerialPort::SerialPortError error){
+                    qDebug() <<"Error occurred: " << error;
+                });
+                if(this->serialports->isOpen()){
+                 serialconnected = true;
+                 qDebug()<<"connected";
                 }
             }
 }
@@ -572,7 +590,14 @@ void secondmain::serialreceiverr()
 {
     QByteArray data;
     data = this->serialports->readAll();
-//    qDebug()<<data;
+    QString temp231(data);
+    if(data=="Done\r\n") {
+        ui->label_10->setText("CẢM ƠN QUÝ KHÁCH !");
+        ui->label_14->setText("");
+        checkouttimer->start(3000);
+        isorderdone = false;
+        qDebug()<<data;
+    }
 }
 
 
