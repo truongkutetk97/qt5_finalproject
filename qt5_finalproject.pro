@@ -41,9 +41,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES += \
     Resource.qrc \
 
-DISTFILES += \
-    logo_cokhi.png \
-    logo_fal.png
+DISTFILES +=
 #INCLUDEPATH    += /usr/include
 #LIBS += -lwiringPi
-#LIBS += -L/usr/local/lib -lwiringPi
+LIBS += -L/usr/local/lib -lwiringPi

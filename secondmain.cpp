@@ -25,7 +25,7 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QObject>
-//#include <wiringPi.h>
+#include <wiringPi.h>
 #define button1 = 21
 #define button2 = 22
 #define button3 = 23
@@ -47,9 +47,9 @@ static uint8_t columnmenu = 0;
 static bool ispush = false;
 static QByteArray serialbuffer;
 static QString serialoutput ;
-static QFont buttonFont("Times", 14, QFont::Bold);
-static QFont choosedfont("Times", 16, QFont::Bold);
-static QFont normalfont("Sans Serif", 9);
+static QFont buttonFont("Sans Serif", 14, QFont::Bold);
+static QFont choosedfont("Sans Serif", 26, QFont::Bold);
+static QFont normalfont("Sans Serif", 19);
 
 void isr231();
 void isr232();
@@ -60,22 +60,22 @@ secondmain::secondmain(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::secondmain)
 {
-//    wiringPiSetup();
-//    pinMode(21, OUTPUT);
-//    pinMode(22, OUTPUT);
-//    pinMode(23, OUTPUT);
-//    pinMode(24, OUTPUT);
-//    pinMode(25, OUTPUT);
-//    pullUpDnControl(21,PUD_DOWN);
-//    pullUpDnControl(22,PUD_DOWN);
-//    pullUpDnControl(23,PUD_DOWN);
-//    pullUpDnControl(24,PUD_DOWN);
-//    pullUpDnControl(25,PUD_DOWN);
-//    wiringPiISR(21,INT_EDGE_RISING,isr231);
-//    wiringPiISR(22,INT_EDGE_RISING,isr232);
-//    wiringPiISR(23,INT_EDGE_RISING,isr233);
-//    wiringPiISR(24,INT_EDGE_RISING,isr234);
-//    wiringPiISR(25,INT_EDGE_RISING,isr235);
+    wiringPiSetup();
+    pinMode(21, OUTPUT);
+    pinMode(22, OUTPUT);
+    pinMode(23, OUTPUT);
+    pinMode(24, OUTPUT);
+    pinMode(25, OUTPUT);
+    pullUpDnControl(21,PUD_DOWN);
+    pullUpDnControl(22,PUD_DOWN);
+    pullUpDnControl(23,PUD_DOWN);
+    pullUpDnControl(24,PUD_DOWN);
+    pullUpDnControl(25,PUD_DOWN);
+    wiringPiISR(21,INT_EDGE_RISING,isr231);
+    wiringPiISR(22,INT_EDGE_RISING,isr232);
+    wiringPiISR(23,INT_EDGE_RISING,isr233);
+    wiringPiISR(24,INT_EDGE_RISING,isr234);
+    wiringPiISR(25,INT_EDGE_RISING,isr235);
 
 
     ui->setupUi(this);
@@ -89,6 +89,24 @@ secondmain::secondmain(QWidget *parent) :
     QAction *readfile = new QAction("Read File");
     QAction *addline = new QAction("Add Line");
     QAction *clear = new QAction("Clear Text");
+
+    //Setup font to button
+    ui->cbx01->setFont(normalfont);
+    ui->cbx02->setFont(normalfont);
+    ui->cbx11->setFont(normalfont);
+    ui->cbx12->setFont(normalfont);
+    ui->cbx21->setFont(normalfont);
+    ui->cbx22->setFont(normalfont);
+    ui->cbx31->setFont(normalfont);
+    ui->cbx32->setFont(normalfont);
+    ui->cbx33->setFont(normalfont);
+    ui->cbx41->setFont(normalfont);
+    ui->cbx42->setFont(normalfont);
+    ui->cbx43->setFont(normalfont);
+    ui->cbx51->setFont(normalfont);
+    ui->cbx52->setFont(normalfont);
+    ui->cbx53->setFont(normalfont);
+
     // logout button in menu bar, back to mainwindow
     connect(logoutaction,&QAction::triggered,[=](){
         this->hide();
@@ -97,20 +115,17 @@ secondmain::secondmain(QWidget *parent) :
     });
     // file menubar block
     connect(readfile,&QAction::triggered,[&](){
-        ui->textBrowser->clear();
         *doc = loadJson(fn);
          json = doc->object();
         foreach(const QString& key, json.keys()) {
             QJsonValue value = json.value(key);
             QString texttemp = key.simplified() +"="+ json.value(key).toString().simplified() ;
-            ui->textBrowser->append(texttemp);
     //        qDebug() << "Key = " << key << ", Value = " << value.toString();
             }
     });
     connect(addline,&QAction::triggered,[&](){
     });
     connect(clear,&QAction::triggered,[&](){
-    ui->textBrowser->clear();
     });
     // end file menubar block
     // debug button in menu bar
@@ -144,6 +159,9 @@ secondmain::secondmain(QWidget *parent) :
         dialog.resize(250, 100);
         dialog.exec();
     });
+
+
+
     // menu bar setup
     QMenu *filemenu =  menuBar()->addMenu("File");
     menuBar()->addMenu("Edit");
@@ -157,6 +175,7 @@ secondmain::secondmain(QWidget *parent) :
      filemenu->addAction(addline);
      filemenu->addAction(clear);
      // end menu bar setup
+
      // UI setup
     ui->label->setMinimumWidth(100);
     ui->label->setText("Not connected");
@@ -168,8 +187,9 @@ secondmain::secondmain(QWidget *parent) :
     ui->statusbar->addPermanentWidget(ui->comboBox);
     ui->statusbar->addPermanentWidget(ui->comboBox_3);
     ui->statusbar->addPermanentWidget(debugbtn);
-    ui->textBrowser->hide();
     //    ui->statusbar->hide();  //this should be uncomment at run mode
+
+    //Timersetup
     QTimer *timer = new QTimer(this);
     QTimer *scanbutton = new QTimer(this);
     // TImer serial scan
@@ -179,6 +199,7 @@ secondmain::secondmain(QWidget *parent) :
         QByteArray data;
         data = this->serialports2->readAll();
     });
+
     //connect to serial callback
     connect(this->serialports,&QSerialPort::readyRead,this,&secondmain::serialreceiverr);
     //button clear text browsing
@@ -186,67 +207,14 @@ secondmain::secondmain(QWidget *parent) :
     connect(debugbtn, &QPushButton::clicked,[=](){
         debugcouting++;
         if(debugcouting%2){
-            this->ui->textBrowser->hide();
             filemenu->clear();
         }else {
-            this->ui->textBrowser->show();
             filemenu->addAction(readfile);
             filemenu->addAction(addline);
             filemenu->addAction(clear);
         }
     });
-    // Handle menu and Send json to uno
-    connect(ui->pushButton,&QPushButton::clicked,[=](){ //send
-    // Build json from menu
-        this->checkcheckbox(ui->cbx01->isChecked(),"size","1");
-        this->checkcheckbox(ui->cbx02->isChecked(),"size","2");
-        this->checkcheckbox(ui->cbx11->isChecked(),"syrup","1");
-        this->checkcheckbox(ui->cbx12->isChecked(),"syrup","2");
-        this->checkcheckbox(ui->cbx13->isChecked(),"syrup","3");
-        this->checkcheckbox(ui->cbx21->isChecked(),"toptype","1");
-        this->checkcheckbox(ui->cbx22->isChecked(),"toptype","2");
-        this->checkcheckbox(ui->cbx31->isChecked(),"toplevel","1");
-        this->checkcheckbox(ui->cbx32->isChecked(),"toplevel","2");
-        this->checkcheckbox(ui->cbx33->isChecked(),"toplevel","3");
-        this->checkcheckbox(ui->cbx41->isChecked(),"sugar","1");
-        this->checkcheckbox(ui->cbx42->isChecked(),"sugar","2");
-        this->checkcheckbox(ui->cbx43->isChecked(),"sugar","3");
-        this->checkcheckbox(ui->cbx51->isChecked(),"ice","1");
-        this->checkcheckbox(ui->cbx52->isChecked(),"ice","2");
-        this->checkcheckbox(ui->cbx53->isChecked(),"ice","3");
 
-    // Send json to uno
-//            QString command = ui->lineEdit_3->text();
-            QString command;
-            command +="{";
-            QJsonDocument a = loadJson(fn);
-            QJsonObject b = a.object();
-            uint8_t indexx = 1;
-            foreach(const QString& key, b.keys()) {
-                QJsonValue value1 = b.value(key);
-                QString texttemp = key.simplified() +"="+ b.value(key).toString().simplified() ;
-                command = command + "\"" +key.simplified() +"\"" +":"
-                                     "\"" ;command +=b.value(key).toString();command+= "\"" ;
-                if(indexx!=b.keys().length())command= command +",";
-                indexx++;
-            }
-            command +="}";
-            command.append("@");
-            this->serialports->write(command.toUtf8());
-            qDebug()<<command;
-            command.clear();
-
-            //Show in textbrowser
-                ui->textBrowser->clear();
-                *doc = loadJson(fn);
-                 json = doc->object();
-                foreach(const QString& key, json.keys()) {
-                    QJsonValue value = json.value(key);
-                    QString texttemp = key.simplified() +"="+ json.value(key).toString().simplified() ;
-                    ui->textBrowser->append(texttemp);
-                    }
-
-    });
 
 
     timer->start(1000);
@@ -257,13 +225,14 @@ void secondmain::scanbutton(){
                 if(ui->label_10->text()=="PLEASE WAIT A SECOND!"){
                     ui->label_10->setText("THANKS!");
                 }
+
+                //Checkout btn pressed
                 if((readbutton==5)&&(columnmenu==7)){
                     ui->label_10->setText("PLEASE WAIT A SECOND!");
                     ui->cbx01->setFont(normalfont);
                     ui->cbx02->setFont(normalfont);
                     ui->cbx11->setFont(normalfont);
                     ui->cbx12->setFont(normalfont);
-                    ui->cbx13->setFont(normalfont);
                     ui->cbx21->setFont(normalfont);
                     ui->cbx22->setFont(normalfont);
                     ui->cbx31->setFont(normalfont);
@@ -275,6 +244,52 @@ void secondmain::scanbutton(){
                     ui->cbx51->setFont(normalfont);
                     ui->cbx52->setFont(normalfont);
                     ui->cbx53->setFont(normalfont);
+                    // Build json from menu
+                        this->checkcheckbox(ui->cbx01->isChecked(),"size","1");
+                        this->checkcheckbox(ui->cbx02->isChecked(),"size","2");
+                        this->checkcheckbox(ui->cbx11->isChecked(),"syrup","1");
+                        this->checkcheckbox(ui->cbx12->isChecked(),"syrup","2");
+                        this->checkcheckbox(ui->cbx21->isChecked(),"toptype","1");
+                        this->checkcheckbox(ui->cbx22->isChecked(),"toptype","2");
+                        this->checkcheckbox(ui->cbx31->isChecked(),"toplevel","1");
+                        this->checkcheckbox(ui->cbx32->isChecked(),"toplevel","2");
+                        this->checkcheckbox(ui->cbx33->isChecked(),"toplevel","3");
+                        this->checkcheckbox(ui->cbx41->isChecked(),"sugar","1");
+                        this->checkcheckbox(ui->cbx42->isChecked(),"sugar","2");
+                        this->checkcheckbox(ui->cbx43->isChecked(),"sugar","3");
+                        this->checkcheckbox(ui->cbx51->isChecked(),"ice","1");
+                        this->checkcheckbox(ui->cbx52->isChecked(),"ice","2");
+                        this->checkcheckbox(ui->cbx53->isChecked(),"ice","3");
+
+                    // Send json to uno
+                //            QString command = ui->lineEdit_3->text();
+                            QString command;
+                            command +="{";
+                            QJsonDocument a = loadJson(fn);
+                            QJsonObject b = a.object();
+                            uint8_t indexx = 1;
+                            foreach(const QString& key, b.keys()) {
+                                QJsonValue value1 = b.value(key);
+                                QString texttemp = key.simplified() +"="+ b.value(key).toString().simplified() ;
+                                command = command + "\"" +key.simplified() +"\"" +":"
+                                                     "\"" ;command +=b.value(key).toString();command+= "\"" ;
+                                if(indexx!=b.keys().length())command= command +",";
+                                indexx++;
+                            }
+                            command +="}";
+                            command.append("@");
+                            this->serialports->write(command.toUtf8());
+                            qDebug()<<command;
+                            command.clear();
+
+                            //Show in textbrowser
+                                *doc = loadJson(fn);
+                                 json = doc->object();
+                                foreach(const QString& key, json.keys()) {
+                                    QJsonValue value = json.value(key);
+                                    QString texttemp = key.simplified() +"="+ json.value(key).toString().simplified() ;
+                                    }
+
                 }
                 if (columnmenu==1){
                     ui->label_10->setText("PLEASE CHOOSE SYRUP TYPTE!");
@@ -288,7 +303,6 @@ void secondmain::scanbutton(){
                     switch (readbutton) {
                     case 1:    ui->cbx11->setFont(choosedfont); break;
                     case 2:    ui->cbx12->setFont(choosedfont); break;
-                    case 3:    ui->cbx13->setFont(choosedfont); break;
                     }
                 }
                 if (columnmenu==3){
@@ -329,14 +343,12 @@ void secondmain::scanbutton(){
                 if((readbutton==4)&&(columnmenu==0)){
                     ui->label_10->setText("PLEASE CHOOSE SIZE!");
                     columnmenu++;
-                    ui->pushButton_2->setText("CLEAR");
                 }else if((readbutton==4)&&(columnmenu=!0)) {
                     columnmenu=0;
                     ui->cbx01->setFont(normalfont);
                     ui->cbx02->setFont(normalfont);
                     ui->cbx11->setFont(normalfont);
                     ui->cbx12->setFont(normalfont);
-                    ui->cbx13->setFont(normalfont);
                     ui->cbx21->setFont(normalfont);
                     ui->cbx22->setFont(normalfont);
                     ui->cbx31->setFont(normalfont);
@@ -370,51 +382,51 @@ void secondmain::isr27()
 {
 
 }
-//void isr231(){
-//    if(digitalRead(21)){
-//        //delay(30);
-//        delayMicroseconds(10000);
-//        while(digitalRead(21)){}
-//        qDebug()<< "frombutton 21 ";
-//        readbutton = 1;ispush =true;
-//    }
-//}
-//void isr232(){
-//    if(digitalRead(22)){
-//        //delay(30);
-//        delayMicroseconds(10000);
-//        while(digitalRead(22)){}
-//        readbutton = 2;ispush =true;
-//        qDebug()<< "frombutton 22 ";
-//    }
-//}
-//void isr233(){
-//    if(digitalRead(23)){
-//        //delay(30);
-//        delayMicroseconds(10000);
-//        while(digitalRead(23)){}
-//        readbutton = 3;ispush =true;
-//        qDebug()<< "frombutton  23 ";
-//    }
-//}
-//void isr234(){
-//    if(digitalRead(24)){
-//        //delay(30);
-//        delayMicroseconds(10000);
-//        while(digitalRead(24)){}
-//        readbutton = 5;ispush =true;
-//        qDebug()<< "frombutton  25 ";
-//    }
-//}
-//void isr235(){
-//    if(digitalRead(25)){
-//        //delay(30);
-//        delayMicroseconds(10000);
-//        while(digitalRead(25)){}
-//        readbutton = 4;ispush =true;
-//        qDebug()<< "frombutton  24 ";
-//    }
-//}
+void isr231(){
+    if(digitalRead(21)){
+        //delay(30);
+        delayMicroseconds(10000);
+        while(digitalRead(21)){}
+        qDebug()<< "frombutton 21 ";
+        readbutton = 1;ispush =true;
+    }
+}
+void isr232(){
+    if(digitalRead(22)){
+        //delay(30);
+        delayMicroseconds(10000);
+        while(digitalRead(22)){}
+        readbutton = 2;ispush =true;
+        qDebug()<< "frombutton 22 ";
+    }
+}
+void isr233(){
+    if(digitalRead(23)){
+        //delay(30);
+        delayMicroseconds(10000);
+        while(digitalRead(23)){}
+        readbutton = 3;ispush =true;
+        qDebug()<< "frombutton  23 ";
+    }
+}
+void isr234(){
+    if(digitalRead(24)){
+        //delay(30);
+        delayMicroseconds(10000);
+        while(digitalRead(24)){}
+        readbutton = 5;ispush =true;
+        qDebug()<< "frombutton  25 ";
+    }
+}
+void isr235(){
+    if(digitalRead(25)){
+        //delay(30);
+        delayMicroseconds(10000);
+        while(digitalRead(25)){}
+        readbutton = 4;ispush =true;
+        qDebug()<< "frombutton  24 ";
+    }
+}
 
 secondmain::~secondmain()
 {
@@ -495,14 +507,12 @@ void secondmain::serialreceiverr()
 //Json block
 void secondmain::on_pushButton_clicked()
 {
-    ui->textBrowser->clear();
 
     *doc = loadJson(fn);
      json = doc->object();
     foreach(const QString& key, json.keys()) {
         QJsonValue value = json.value(key);
         QString texttemp = key.simplified() +"="+ json.value(key).toString().simplified() ;
-        ui->textBrowser->append(texttemp);
 //        qDebug() << "Key = " << key << ", Value = " << value.toString();
         }
 }
@@ -531,7 +541,6 @@ void secondmain::saveJson(QJsonDocument document, QString fileName) {
 
 void secondmain::on_pushButton_3_clicked()
 {
-    ui->textBrowser->clear();
 }
 
 

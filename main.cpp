@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 
 //     w->setStyleSheet("QFrame {background-image :url(/*/resourcee/background2.jpg*/)}");
 
-    w->show();
+    w->showFullScreen();
 
 //    w->setFixedSize(1366,768 );
     return a.exec();
