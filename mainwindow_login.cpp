@@ -15,12 +15,28 @@ MainWindow_login::MainWindow_login(QWidget *parent)
     ui->pushButton->setAutoFillBackground(false);
     ui->lineEdit->setEchoMode(QLineEdit::Password);
 //    this->setStyleSheet("background-image: url(:/resourcee/background2.jpg);");
-    QPixmap pixmap;
-    pixmap.load(":/resourcee/background2.jpg");
-    pixmap = pixmap.scaled(1366,768, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-    QPalette palette;
-    palette.setBrush(QPalette::Window, pixmap);
-    this->setPalette(palette);
+//    QPixmap pixmap;
+//    pixmap.load(":/resourcee/background2.jpg");
+//    pixmap = pixmap.scaled(1366,768, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+//    QPalette palette;
+//    palette.setBrush(QPalette::Window, pixmap);
+//    this->setPalette(palette);
+         QFont title1("Times New Roman",30,QFont::Bold);
+       QFont title2("Times New Roman",25,QFont::Bold);
+       QFont title3("Times New Roman",20,QFont::Bold);
+
+       ui->label_2->setFont(title1);
+       ui->label_5->setFont(title2);
+       ui->label_6->setFont(title3);
+       ui->label_7->setFont(title3);
+       ui->label_8->setFont(title3);
+
+       QPixmap pixmap2;
+       pixmap2.load(":/logo_cokhi.png");
+       pixmap2 = pixmap2.scaled(1280,180, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+       QPalette palette2;
+       palette2.setBrush(QPalette::Window, pixmap2);
+       ui->label->setPixmap(pixmap2);
 }
 
 MainWindow_login::~MainWindow_login()

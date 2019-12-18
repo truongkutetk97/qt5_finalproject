@@ -26,6 +26,9 @@
 #include <QLineEdit>
 #include <QObject>
 #include <wiringPi.h>
+#include<iostream>
+#include <sstream>
+#include <string.h>
 #define button1 = 21
 #define button2 = 22
 #define button3 = 23
@@ -43,13 +46,18 @@ static bool serialconnected2 = false;
 static uint16_t  connectcouting= 0;
 static uint16_t  debugcouting= 1;
 static uint8_t readbutton = 0;
+static float total = 0;
+
 static uint8_t columnmenu = 0;
 static bool ispush = false;
+static bool isorderdone = false;
+static QString receipt;
 static QByteArray serialbuffer;
 static QString serialoutput ;
 static QFont buttonFont("Sans Serif", 14, QFont::Bold);
 static QFont choosedfont("Sans Serif", 26, QFont::Bold);
 static QFont normalfont("Sans Serif", 19);
+static QTimer *checkouttimer = new QTimer();
 
 void isr231();
 void isr232();
@@ -91,27 +99,25 @@ secondmain::secondmain(QWidget *parent) :
     QAction *clear = new QAction("Clear Text");
 
     //Setup font to button
-    ui->cbx01->setFont(normalfont);
-    ui->cbx02->setFont(normalfont);
-    ui->cbx11->setFont(normalfont);
-    ui->cbx12->setFont(normalfont);
-    ui->cbx21->setFont(normalfont);
-    ui->cbx22->setFont(normalfont);
-    ui->cbx31->setFont(normalfont);
-    ui->cbx32->setFont(normalfont);
-    ui->cbx33->setFont(normalfont);
-    ui->cbx41->setFont(normalfont);
-    ui->cbx42->setFont(normalfont);
-    ui->cbx43->setFont(normalfont);
-    ui->cbx51->setFont(normalfont);
-    ui->cbx52->setFont(normalfont);
-    ui->cbx53->setFont(normalfont);
+
+
+
+    //Setup title
+    QFont title1("Times New Roman",30,QFont::Bold);
+  QFont title2("Times New Roman",25,QFont::Bold);
+  QFont title3("Times New Roman",20,QFont::Bold);
+    QPixmap pixmap2;
+    pixmap2.load(":/logo_cokhi.png");
+    pixmap2 = pixmap2.scaled(1280,180, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    QPalette palette2;
+    palette2.setBrush(QPalette::Window, pixmap2);
+    //ui->label_11->setPixmap(pixmap2);
 
     // logout button in menu bar, back to mainwindow
     connect(logoutaction,&QAction::triggered,[=](){
         this->hide();
         MainWindow_login *w = new MainWindow_login();
-        w->show();
+        w->showFullScreen();
     });
     // file menubar block
     connect(readfile,&QAction::triggered,[&](){
@@ -187,14 +193,40 @@ secondmain::secondmain(QWidget *parent) :
     ui->statusbar->addPermanentWidget(ui->comboBox);
     ui->statusbar->addPermanentWidget(ui->comboBox_3);
     ui->statusbar->addPermanentWidget(debugbtn);
+    ui->label_11->setText("");
+    ui->label_12->setText("");
+    ui->label_13->setText("");
+    ui->label_2->setText("");
+    ui->label_3->setText("");
+    ui->label_4->setText("");
+    ui->label_5->setText("");
+    ui->label_6->setText("");
+
     //    ui->statusbar->hide();  //this should be uncomment at run mode
 
     //Timersetup
     QTimer *timer = new QTimer(this);
     QTimer *scanbutton = new QTimer(this);
-    // TImer serial scan
+
+    //Define Timer
     connect(timer,SIGNAL(timeout()) ,this,SLOT(scanSerialPorts()));
     connect(scanbutton,&QTimer::timeout,this,&secondmain::scanbutton);
+    connect(checkouttimer,&QTimer::timeout,[&](){
+        ui->label_10->setText("CHÀO QUÝ KHÁCH ! ");
+        ui->label_14->setText("NHẤN NÚT BẤT KỲ ĐỂ BẮT ĐẦU CHỌN MÓN!");
+        ui->label_11->setText("");
+        ui->label_12->setText("");
+        ui->label_13->setText("");
+        ui->label_3->setText("");
+        ui->label_2->setText("");
+        ui->label_4->setText("");
+        ui->label_5->setText("");
+        ui->label_6->setText("");
+        columnmenu = 0;
+        total=0;
+        checkouttimer->stop();
+    });
+
     connect(this->serialports2,&QSerialPort::readyRead,[=](){
         QByteArray data;
         data = this->serialports2->readAll();
@@ -221,146 +253,187 @@ secondmain::secondmain(QWidget *parent) :
     scanbutton->start(100);
 }
 void secondmain::scanbutton(){
+
             if(ispush){
-                if(ui->label_10->text()=="PLEASE WAIT A SECOND!"){
-                    ui->label_10->setText("THANKS!");
-                }
-
-                //Checkout btn pressed
-                if((readbutton==5)&&(columnmenu==7)){
-                    ui->label_10->setText("PLEASE WAIT A SECOND!");
-                    ui->cbx01->setFont(normalfont);
-                    ui->cbx02->setFont(normalfont);
-                    ui->cbx11->setFont(normalfont);
-                    ui->cbx12->setFont(normalfont);
-                    ui->cbx21->setFont(normalfont);
-                    ui->cbx22->setFont(normalfont);
-                    ui->cbx31->setFont(normalfont);
-                    ui->cbx32->setFont(normalfont);
-                    ui->cbx33->setFont(normalfont);
-                    ui->cbx41->setFont(normalfont);
-                    ui->cbx42->setFont(normalfont);
-                    ui->cbx43->setFont(normalfont);
-                    ui->cbx51->setFont(normalfont);
-                    ui->cbx52->setFont(normalfont);
-                    ui->cbx53->setFont(normalfont);
-                    // Build json from menu
-                        this->checkcheckbox(ui->cbx01->isChecked(),"size","1");
-                        this->checkcheckbox(ui->cbx02->isChecked(),"size","2");
-                        this->checkcheckbox(ui->cbx11->isChecked(),"syrup","1");
-                        this->checkcheckbox(ui->cbx12->isChecked(),"syrup","2");
-                        this->checkcheckbox(ui->cbx21->isChecked(),"toptype","1");
-                        this->checkcheckbox(ui->cbx22->isChecked(),"toptype","2");
-                        this->checkcheckbox(ui->cbx31->isChecked(),"toplevel","1");
-                        this->checkcheckbox(ui->cbx32->isChecked(),"toplevel","2");
-                        this->checkcheckbox(ui->cbx33->isChecked(),"toplevel","3");
-                        this->checkcheckbox(ui->cbx41->isChecked(),"sugar","1");
-                        this->checkcheckbox(ui->cbx42->isChecked(),"sugar","2");
-                        this->checkcheckbox(ui->cbx43->isChecked(),"sugar","3");
-                        this->checkcheckbox(ui->cbx51->isChecked(),"ice","1");
-                        this->checkcheckbox(ui->cbx52->isChecked(),"ice","2");
-                        this->checkcheckbox(ui->cbx53->isChecked(),"ice","3");
-
-                    // Send json to uno
-                //            QString command = ui->lineEdit_3->text();
-                            QString command;
-                            command +="{";
-                            QJsonDocument a = loadJson(fn);
-                            QJsonObject b = a.object();
-                            uint8_t indexx = 1;
-                            foreach(const QString& key, b.keys()) {
-                                QJsonValue value1 = b.value(key);
-                                QString texttemp = key.simplified() +"="+ b.value(key).toString().simplified() ;
-                                command = command + "\"" +key.simplified() +"\"" +":"
-                                                     "\"" ;command +=b.value(key).toString();command+= "\"" ;
-                                if(indexx!=b.keys().length())command= command +",";
-                                indexx++;
-                            }
-                            command +="}";
-                            command.append("@");
-                            this->serialports->write(command.toUtf8());
-                            qDebug()<<command;
-                            command.clear();
-
-                            //Show in textbrowser
-                                *doc = loadJson(fn);
-                                 json = doc->object();
-                                foreach(const QString& key, json.keys()) {
-                                    QJsonValue value = json.value(key);
-                                    QString texttemp = key.simplified() +"="+ json.value(key).toString().simplified() ;
-                                    }
-
-                }
-                if (columnmenu==1){
-                    ui->label_10->setText("PLEASE CHOOSE SYRUP TYPTE!");
-                    switch (readbutton) {
-                    case 1:    ui->cbx01->setFont(choosedfont); break;
-                    case 2:    ui->cbx02->setFont(choosedfont); break;
-                    }
-                }
-                if (columnmenu==2){
-                    ui->label_10->setText("PLEASE CHOOSE TOPPING TYPTE!");
-                    switch (readbutton) {
-                    case 1:    ui->cbx11->setFont(choosedfont); break;
-                    case 2:    ui->cbx12->setFont(choosedfont); break;
-                    }
-                }
-                if (columnmenu==3){
-                    ui->label_10->setText("PLEASE CHOOSE TOPPING LEVEL!");
-                    switch (readbutton) {
-                    case 1:    ui->cbx21->setFont(choosedfont); break;
-                    case 2:    ui->cbx22->setFont(choosedfont); break;
-                    }
-                }
-                if (columnmenu==4){
-                    ui->label_10->setText("PLEASE CHOOSE SUGAR LEVEL!");
-                    switch (readbutton) {
-                    case 1:    ui->cbx31->setFont(choosedfont); break;
-                    case 2:    ui->cbx32->setFont(choosedfont); break;
-                    case 3:    ui->cbx33->setFont(choosedfont); break;
-                    }
-                }
-                if (columnmenu==5){
-                    ui->label_10->setText("PLEASE CHOOSE ICE LEVEL!");
-                    switch (readbutton) {
-                    case 1:    ui->cbx41->setFont(choosedfont); break;
-                    case 2:    ui->cbx42->setFont(choosedfont); break;
-                    case 3:    ui->cbx43->setFont(choosedfont); break;
-                    }
-                }
-                if (columnmenu==6){
-                    ui->label_10->setText("TOTAL: 3000$!");
-                    switch (readbutton) {
-                    case 1:    ui->cbx51->setFont(choosedfont); break;
-                    case 2:    ui->cbx52->setFont(choosedfont); break;
-                    case 3:    ui->cbx53->setFont(choosedfont); break;
-                    }
+                if(!columnmenu){
+                    columnmenu = 1;
                 }
                 qDebug()<<columnmenu;
-                if ((columnmenu>=1)&&(columnmenu<=6)&&(readbutton!=4)&&(readbutton!=5)){
+                if(readbutton==5){
+                    checkouttimer->start(5);
+                    columnmenu = 0;
+                }
+                if (columnmenu==1){
                     columnmenu ++;
-                }
-                if((readbutton==4)&&(columnmenu==0)){
-                    ui->label_10->setText("PLEASE CHOOSE SIZE!");
-                    columnmenu++;
-                }else if((readbutton==4)&&(columnmenu=!0)) {
-                    columnmenu=0;
-                    ui->cbx01->setFont(normalfont);
-                    ui->cbx02->setFont(normalfont);
-                    ui->cbx11->setFont(normalfont);
-                    ui->cbx12->setFont(normalfont);
-                    ui->cbx21->setFont(normalfont);
-                    ui->cbx22->setFont(normalfont);
-                    ui->cbx31->setFont(normalfont);
-                    ui->cbx32->setFont(normalfont);
-                    ui->cbx33->setFont(normalfont);
-                    ui->cbx41->setFont(normalfont);
-                    ui->cbx42->setFont(normalfont);
-                    ui->cbx43->setFont(normalfont);
-                    ui->cbx51->setFont(normalfont);
-                    ui->cbx52->setFont(normalfont);
-                    ui->cbx53->setFont(normalfont);
-                }
+                    ui->label_10->setText("MỜI QUÝ KHÁCH CHỌN");
+                    ui->label_2->setText("Trà sữa: ");
+                    ui->label_4->setText("Thành tiền:");
+                    QString temp1 = QString::number(total,'f',2);
+                    ui->label_5->setText(temp1);
+                    ui->label_6->setText("VND");
+                    ui->label_14->setText("CỠ LY !");
+                    ui->label_11->setText("L");
+                    ui->label_12->setText("XL");
+                    ui->label_13->setText("XXL");
+                    switch (readbutton) {
+                    case 1:    break;
+                    default:    break;
+                    }
+                }else
+                if ((columnmenu==2)&&(readbutton!=1)){
+                    columnmenu ++;
+                    ui->label_14->setText("LOẠI TRÀ !");
+                    ui->label_11->setText("Caramel");
+                    ui->label_12->setText("Chocolate");
+                    ui->label_13->setText("Ô long");
+                    receipt.clear();
+                    receipt.append("Size ")                    ;
+                    switch (readbutton) {
+                    case 2:    {       total+= 20000; receipt.append("L "); break;  }
+                    case 3:    {       total+= 25000; receipt.append("XL "); break; }
+                    case 4:    {       total+= 30000; receipt.append("XXL "); break; }
+                    }
+                    QLocale locale ;
+                    QString temp1 = locale.toString(total,'f',2);
+                    ui->label_5->setText(temp1);
+                    ui->label_3->setText(receipt);
+
+                }else
+                if ((columnmenu==3)&&(readbutton!=1)){
+                    columnmenu ++;
+                    ui->label_14->setText("LOẠI THẠCH !");
+                    ui->label_11->setText("Pudding");
+                    ui->label_12->setText("Đậu đỏ");
+                    ui->label_13->setText("");
+                    receipt.append(", Vị ")                    ;
+                    switch (readbutton) {
+                    case 2:     total+=5000; receipt.append("Caramel "); break;
+                    case 3:     total+=6000; receipt.append("Chocolate "); break;
+                    case 4:     total+=7000; receipt.append("Ô long "); break;
+                    }
+                    QLocale locale ;
+                    QString temp1 = locale.toString(total,'f',2);
+                    ui->label_5->setText(temp1);
+                    ui->label_3->setText(receipt);
+                }else
+                if ((columnmenu==4)&&(readbutton!=1)){
+                    columnmenu ++;
+                    ui->label_14->setText("LƯỢNG THẠCH !");
+                    ui->label_11->setText("Ít");
+                    ui->label_12->setText("Vừa");
+                    ui->label_13->setText("Nhiều");
+                    receipt.append(", Thạch ")                    ;
+                    switch (readbutton) {
+                    case 2:     total+=5000; receipt.append("Pudding "); break;
+                    case 3:     total+=6000; receipt.append("Đậu đỏ "); break;
+                    }
+                    QLocale locale ;
+                    QString temp1 = locale.toString(total,'f',2);
+                    ui->label_5->setText(temp1);
+                    ui->label_3->setText(receipt);
+                }else
+                if ((columnmenu==5)&&(readbutton!=1)){
+                    columnmenu ++;
+                    ui->label_14->setText("LƯỢNG ĐƯỜNG !");
+                    ui->label_11->setText("Ít");
+                    ui->label_12->setText("Vừa");
+                    ui->label_13->setText("Nhiều");
+                    receipt.append(", ")                    ;
+                    switch (readbutton) {
+                    case 2:    total+=5000; receipt.append("Ít "); break;
+                    case 3:    total+=7000; receipt.append("Vừa "); break;
+                    case 4:    total+=10000; receipt.append("Nhiều "); break;
+                    }
+                    QLocale locale ;
+                    QString temp1 = locale.toString(total,'f',2);
+                    ui->label_5->setText(temp1);
+                    receipt.append("thạch, ")                    ;
+                    ui->label_3->setText(receipt);
+                }else
+                if ((columnmenu==6)&&(readbutton!=1)){
+                    columnmenu ++;
+                    ui->label_14->setText("LƯỢNG ĐÁ !");
+                    ui->label_11->setText("Ít");
+                    ui->label_12->setText("Vừa");
+                    ui->label_13->setText("Nhiều");
+                    switch (readbutton) {
+                    case 2:     receipt.append("Ít "); break;
+                    case 3:     receipt.append("Vừa "); break;
+                    case 4:     receipt.append("Nhiều "); break;
+                    }
+                    receipt.append("đường, ")                    ;
+                    ui->label_3->setText(receipt);
+                }else
+                    if ((columnmenu==7)&&(readbutton!=1)){
+                        columnmenu ++;
+                        isorderdone = true;
+                        ui->label_10->setText("MỜI QUÝ KHÁCH ");
+                        ui->label_14->setText("XÁC NHẬN ĐƠN HÀNG !");
+                        ui->label_11->setText("");
+                        QString temp1("Tổng cộng: ");
+                        QLocale locale ;
+                        QString temp2 = locale.toString(total,'f',2);
+                        temp1.append(temp2);temp1.append(" VND.");
+                        ui->label_12->setText(temp1);
+                        ui->label_13->setText("");
+                        switch (readbutton) {
+                        case 2:     receipt.append("Ít "); break;
+                        case 3:     receipt.append("Vừa "); break;
+                        case 4:     receipt.append("Nhiều "); break;
+                        }
+                        receipt.append("đá.")                    ;
+                        ui->label_3->setText(receipt);
+                 }else
+                    //Checkout btn pressed
+                    if((readbutton==1)&&(isorderdone)){
+                        checkouttimer->start(3000);
+                        isorderdone = false;
+                        ui->label_10->setText("MỜI QUÝ KHÁCH TÍNH TIỀN");
+                        ui->label_14->setText("VÀ ĐỢI TRONG GIÂY LÁT!");
+                        // Build json from menu
+
+                        // Send json to uno
+                    //            QString command = ui->lineEdit_3->text();
+                                QString command;
+                                command +="{";
+                                QJsonDocument a = loadJson(fn);
+                                QJsonObject b = a.object();
+                                uint8_t indexx = 1;
+                                foreach(const QString& key, b.keys()) {
+                                    QJsonValue value1 = b.value(key);
+                                    QString texttemp = key.simplified() +"="+ b.value(key).toString().simplified() ;
+                                    command = command + "\"" +key.simplified() +"\"" +":"
+                                                         "\"" ;command +=b.value(key).toString();command+= "\"" ;
+                                    if(indexx!=b.keys().length())command= command +",";
+                                    indexx++;
+                                }
+                                command +="}";
+                                command.append("@");
+                                this->serialports->write(command.toUtf8());
+                                qDebug()<<command;
+                                command.clear();
+
+                                //Show in textbrowser
+                                    *doc = loadJson(fn);
+                                     json = doc->object();
+                                    foreach(const QString& key, json.keys()) {
+                                        QJsonValue value = json.value(key);
+                                        QString texttemp = key.simplified() +"="+ json.value(key).toString().simplified() ;
+                                        }
+                    }
+
+//                if ((columnmenu>=1)&&(columnmenu<=6)&&(readbutton!=4)&&(readbutton!=5)){
+//                    columnmenu ++;
+//                }
+//                if((readbutton==4)&&(columnmenu==0)){
+//                    ui->label_10->setText("PLEASE CHOOSE SIZE!");
+//                    columnmenu++;
+//                }else if((readbutton==4)&&(columnmenu=!0)) {
+//                    columnmenu=0;
+//                    ui->cbx01->setFont(normalfont);
+
+//                }
+
                  readbutton = 0;
                 ispush = false;
             }

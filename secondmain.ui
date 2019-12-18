@@ -63,485 +63,11 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLabel" name="label_2">
-    <property name="geometry">
-     <rect>
-      <x>230</x>
-      <y>310</y>
-      <width>91</width>
-      <height>19</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>12</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Syrup Type</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_3">
-    <property name="geometry">
-     <rect>
-      <x>444</x>
-      <y>310</y>
-      <width>109</width>
-      <height>19</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>12</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Topping Type</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_4">
-    <property name="geometry">
-     <rect>
-      <x>679</x>
-      <y>310</y>
-      <width>113</width>
-      <height>19</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>12</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Topping Level</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_5">
-    <property name="geometry">
-     <rect>
-      <x>949</x>
-      <y>310</y>
-      <width>95</width>
-      <height>19</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>12</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Sugar Level</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_6">
-    <property name="geometry">
-     <rect>
-      <x>1159</x>
-      <y>310</y>
-      <width>71</width>
-      <height>19</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>12</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Ice Level</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_7">
-    <property name="geometry">
-     <rect>
-      <x>460</x>
-      <y>760</y>
-      <width>201</width>
-      <height>33</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>26</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Total Price: </string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_8">
-    <property name="geometry">
-     <rect>
-      <x>690</x>
-      <y>760</y>
-      <width>171</width>
-      <height>33</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>26</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>10000$</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cbx11">
-    <property name="geometry">
-     <rect>
-      <x>230</x>
-      <y>380</y>
-      <width>181</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 0, 0);</string>
-    </property>
-    <property name="text">
-     <string>Caramel</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cbx12">
-    <property name="geometry">
-     <rect>
-      <x>230</x>
-      <y>450</y>
-      <width>181</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(70, 104, 255);</string>
-    </property>
-    <property name="text">
-     <string>Chocolate</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cbx51">
-    <property name="geometry">
-     <rect>
-      <x>1110</x>
-      <y>380</y>
-      <width>161</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 0, 0);</string>
-    </property>
-    <property name="text">
-     <string>Less (5%)</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cbx52">
-    <property name="geometry">
-     <rect>
-      <x>1110</x>
-      <y>452</y>
-      <width>171</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(70, 104, 255);</string>
-    </property>
-    <property name="text">
-     <string>Medium (55%)</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cbx53">
-    <property name="geometry">
-     <rect>
-      <x>1110</x>
-      <y>530</y>
-      <width>171</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 85, 233);</string>
-    </property>
-    <property name="text">
-     <string>Strong (95%)</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cbx22">
-    <property name="geometry">
-     <rect>
-      <x>450</x>
-      <y>450</y>
-      <width>74</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(70, 104, 255);</string>
-    </property>
-    <property name="text">
-     <string>Pudding</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cbx21">
-    <property name="geometry">
-     <rect>
-      <x>450</x>
-      <y>380</y>
-      <width>83</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 0, 0);</string>
-    </property>
-    <property name="text">
-     <string>Red bean</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cbx33">
-    <property name="geometry">
-     <rect>
-      <x>670</x>
-      <y>532</y>
-      <width>141</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 85, 233);</string>
-    </property>
-    <property name="text">
-     <string>Strong</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cbx31">
-    <property name="geometry">
-     <rect>
-      <x>670</x>
-      <y>380</y>
-      <width>151</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 0, 0);</string>
-    </property>
-    <property name="text">
-     <string>Less</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cbx32">
-    <property name="geometry">
-     <rect>
-      <x>670</x>
-      <y>452</y>
-      <width>141</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(70, 104, 255);</string>
-    </property>
-    <property name="text">
-     <string>Medium</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cbx43">
-    <property name="geometry">
-     <rect>
-      <x>890</x>
-      <y>530</y>
-      <width>171</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 85, 233);</string>
-    </property>
-    <property name="text">
-     <string>Strong (95%)</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cbx41">
-    <property name="geometry">
-     <rect>
-      <x>891</x>
-      <y>380</y>
-      <width>171</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 0, 0);</string>
-    </property>
-    <property name="text">
-     <string>Less (5%)</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cbx42">
-    <property name="geometry">
-     <rect>
-      <x>891</x>
-      <y>452</y>
-      <width>171</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(70, 104, 255);</string>
-    </property>
-    <property name="text">
-     <string>Medium (55%)</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cbx01">
-    <property name="geometry">
-     <rect>
-      <x>48</x>
-      <y>380</y>
-      <width>121</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 0, 0);</string>
-    </property>
-    <property name="text">
-     <string>XL</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_9">
-    <property name="geometry">
-     <rect>
-      <x>48</x>
-      <y>310</y>
-      <width>33</width>
-      <height>19</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>12</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Size</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cbx02">
-    <property name="geometry">
-     <rect>
-      <x>48</x>
-      <y>450</y>
-      <width>141</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(70, 104, 255);</string>
-    </property>
-    <property name="text">
-     <string>XXL</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_10">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>130</y>
+      <y>120</y>
       <width>1261</width>
       <height>71</height>
      </rect>
@@ -552,10 +78,197 @@
      </font>
     </property>
     <property name="text">
-     <string>WELCOME !</string>
+     <string>CHÀO QUÝ KHÁCH!</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_11">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>330</y>
+      <width>481</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>36</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 85, 0);</string>
+    </property>
+    <property name="text">
+     <string>L</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_12">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>460</y>
+      <width>831</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>36</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(29, 29, 255);
+</string>
+    </property>
+    <property name="text">
+     <string>XL</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_13">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>580</y>
+      <width>481</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>36</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color:rgb(42, 116, 46);</string>
+    </property>
+    <property name="text">
+     <string>XXL</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_14">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>200</y>
+      <width>1261</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>36</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>NHẤN NÚT BẤT KỲ ĐỂ BẮT ĐẦU CHỌN MÓN!</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>720</y>
+      <width>151</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>20</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Trà sữa :</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>720</y>
+      <width>1081</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>20</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Size XXL</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>770</y>
+      <width>151</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>20</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Thành tiền:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>770</y>
+      <width>151</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>20</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>50000.00</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>420</x>
+      <y>770</y>
+      <width>151</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>20</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>VND</string>
     </property>
    </widget>
   </widget>
