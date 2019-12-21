@@ -62,6 +62,6 @@ void MainWindow_login::entermainwindows()
     {
         secondmain  *a = new secondmain (this);
         this->hide();
-        a->show();
+        a->showFullScreen();
     }
 }

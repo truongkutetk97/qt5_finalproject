@@ -194,6 +194,8 @@ secondmain::secondmain(QWidget *parent) :
     ui->statusbar->addPermanentWidget(ui->comboBox);
     ui->statusbar->addPermanentWidget(ui->comboBox_3);
     ui->statusbar->addPermanentWidget(debugbtn);
+    ui->statusbar->hide();
+
     ui->label_11->setText("");
     ui->label_12->setText("");
     ui->label_13->setText("");
@@ -267,7 +269,7 @@ void secondmain::scanbutton(){
                 if (columnmenu==1){
                     columnmenu ++;
                     ui->label_10->setText("MỜI QUÝ KHÁCH CHỌN");
-                    ui->label_2->setText("Trà sữa   : ");
+                    ui->label_2->setText("Trà sữa  : ");
                     ui->label_4->setText("Thành tiền:");
                     QString temp1 = QString::number(total,'f',2);
                     ui->label_5->setText(temp1);
@@ -591,13 +593,21 @@ void secondmain::serialreceiverr()
     QByteArray data;
     data = this->serialports->readAll();
     QString temp231(data);
+    qDebug()<<data;
+
     if(data=="Done\r\n") {
+        ui->label_10->setText("TRÀ SỮA ĐÃ XONG!");
+        ui->label_14->setText("MỜI QUÝ KHÁCH LẤY TRÀ SỮA!");
+        qDebug()<<data;
+    }
+    else if (data == "Donee\r\n") {
         ui->label_10->setText("CẢM ƠN QUÝ KHÁCH !");
-        ui->label_14->setText("");
-        checkouttimer->start(3000);
+        ui->label_14->setText("HẸN GẶP LẠI QUÝ KHÁCH!");
+        checkouttimer->start(2000);
         isorderdone = false;
         qDebug()<<data;
     }
+
 }
 
 
